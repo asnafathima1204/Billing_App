@@ -1,0 +1,50 @@
+.row{
+    height: 100vh;
+    /* overflow: hidden; */
+}
+
+.icon-col{
+    border:  2px solid lightgray ;
+}
+
+
+.main-icon{
+    height: 20vh;
+}
+
+.sub-icon{
+    height: 60vh;
+}
+
+.list-group-item{
+    border: transparent !important;
+    display: flex !important;
+}
+
+.list-group-item:hover{
+   background-color: lightgray;
+}
+
+.list-group-item span {
+    padding: 0 5px;
+    width: 35px;
+}
+
+.end-icon li{
+    list-style: none;
+
+}
+
+.page-col{
+    /* border: 2px solid yellow; */
+}
+
+@media (max-width: 575.98px) {
+   
+    .icon-col{
+        flex: 2;
+    }
+    .page-col{
+        flex: 10;
+    }
+  }
