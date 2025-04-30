@@ -1,0 +1,60 @@
+{% extends 'extends.html' %}
+{% load static %}
+{% block title %}Add Product{% endblock %}
+{% block link %}
+<link rel="stylesheet" href="{% static '/CSS/product.css' %}">
+{% endblock %}
+{% block content %}
+<div class="col-lg-10 col-md-9 col-sm-9 page-col">
+    <div class="add-product-content">
+        <h2>Add Product</h2>
+        <h4 class="back"><<a href="{% url 'products_list' %}">Back</a></h4>
+        <div class="content p-4">
+            <div class="box">
+                <form class="product-form" method="post" action="{% url 'add_product' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="product_id" class="form-label">Product ID *</label>
+                                    <input type="text" class="form-control" id="product_id" name="product_id" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Name *</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label><br>
+                                    <textarea name="description" id="description"></textarea>
+                                </div>
+                                
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <input type="text" class="form-control" id="category" name="category" >
+                                </div>
+                                <div class="mb-3">
+                                    <label for="stock" class="form-label">Stock *</label>
+                                    <input type="number" class="form-control" id="stock" name="stock" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="price" class="form-label">Price *</label>
+                                    <input type="number" class="form-control" id="price" name="price" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="image"  class="form-label">Image</label><br>
+                                    <input type="file" class="form-control-file" id="image" name="image">
+                                </div>
+                                
+                            </div>
+                    </div>
+                    <div class="add-product-btn">
+                        <button type="submit" class="btn btn-product-submit">Submit</button>
+                    </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

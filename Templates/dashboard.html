@@ -1,65 +1,64 @@
-<!DOCTYPE html>
+{% extends 'extends.html' %}
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="{% static '/CSS/index.css' %}">
-    <link rel="stylesheet" href="{% static '/CSS/dashboard.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-</head>
-<body>
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert-box">
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+{% block title %}Dashboard{% endblock %}
+{% block link %}{% endblock %}
+{% block content %}
+<div class="col-lg-10 col-md-9 col-sm-9 page-col">gunhujkmmjjjjjjjjj
+    cygvjhknml,
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
     </div>
-    {% endfor %}
-    {% endif %}
-
-    <!-- <h2>Wlcome to dashboard</h2>
-    {% if user.is_superuser %}
-        <h4>hii Admin</h4>
-    {% else %}
-        <h4>Hii Staff</h4>
-    {% endif %} -->
-    
-    <div class="dashboard-page">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-2 col-md-2 icon-col">
-                    <div class="main-icon">
-                        <!-- <h6><strong>BILLING APPLICATION</strong></h6> -->
-                    </div>
-                    <hr>
-                    <div class="sub-icon">
-                        <ul class="list-group">
-                            <a class="list-group-item"><span><i class="fa-solid fa-house"></i></span> <h5>Dashboard</h5></a>
-                            <a class="list-group-item"><span><i class="fa-solid fa-user-tie"></i></span> <h5>Staff</h5></a>
-                            <a class="list-group-item"><span><i class="fa-solid fa-user"></i></span><h5>Customer</h5></a>
-                            <a class="list-group-item"><span><i class="fa-solid fa-layer-group"></i></span><h5>Product</h5></a>
-                            <a class="list-group-item"><span><i class="fa-solid fa-folder-open"></i></span><h5>Bill System</h5></a>
-                        </ul>
-                    </div>
-                    <hr>
-                    <div class="end-icon">
-                        <ul>
-                            <li>Log out</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-10 col-md-10 page-col">ghg</div>
-            </div>
-        </div>
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
     </div>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js" integrity="sha512-b+nQTCdtTBIRIbraqNEwsjB6UvL3UEMkXnhzd8awtCYh0Kcsjl9uEgwVFVbhoj3uu1DO1ZMacNvLoyJJiNfcvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
-</body>
-</html>
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+    </div>
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+    </div>
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+    </div>
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+    </div>
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+    </div>
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+    </div>
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+    </div>
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+    </div>
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+    </div>
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+    </div>
+    <div>
+        
+    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+    </div>
+
+
+</div>
+{% endblock %}

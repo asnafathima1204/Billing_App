@@ -8,6 +8,8 @@ from django.contrib.auth import authenticate,login,logout
 def index(request):
     return render(request,'index.html')
 
+
+
 def login_page(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -32,6 +34,10 @@ def login_page(request):
     #     return redirect('login_page')
                
     return render(request,'login_page.html')
+
+def logout_page(request):
+    logout(request)
+    return redirect('index')
 
 def signup_page(request):
     if request.method == "POST":

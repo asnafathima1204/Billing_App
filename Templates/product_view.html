@@ -1,0 +1,44 @@
+{% extends 'extends.html' %}
+{% load static %}
+{% block title %}View Product{% endblock %}
+{% block link %}
+<link rel="stylesheet" href="{% static '/CSS/product.css' %}">
+{% endblock %}
+{% block content %}
+<div class="col-lg-10 col-md-9 col-sm-9 page-col">
+   <div class="view-page">
+    <h2>Products Details</h2>
+    <h4 class="back"><<a href="{% url 'products_list' %}">Back</a></h4>
+    {% if products %}
+    <div class="product-div">
+        <div class="details-box row">
+                <div class="image-div col-lg-4 col-md-4">
+                    <img src="{{ products.image.url }}" alt="">
+                </div>
+                <div class="details-div col-lg-8 col-md-8">
+                    <div class="container">
+                        <div class="details-content p-4">
+                            <p><strong>ID : </strong>{{ products.product_id }}</p>
+                            <p><strong>Name : </strong>{{ products.name }}</p>
+                            <p><strong>Category : </strong>{{ products.category }}</p>
+                            <p><strong>Description : </strong>{{ products.description }}</p>
+                            <p><strong>Price : </strong>₹{{ products.price }}</p>
+                            <p><strong>Stock : </strong>{{ products.stock }}</p>
+                            <p><strong>Created at : </strong>{{ products.created_at }}</p>
+                            <p><strong>Updated at : </strong>{{ products.updated_at }}</p>
+                           
+                        </div>
+                    </div>
+                    
+        
+                    <div class="view-buttons p-4">
+                        <a href="" class="btn btn-success">Update</a>
+                        <a href="" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+        </div>
+    </div>
+    {% endif %}
+   </div>
+</div>
+{% endblock %}
