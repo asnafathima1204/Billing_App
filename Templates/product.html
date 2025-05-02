@@ -14,36 +14,45 @@
     </div>
    </div>
    {% if products %}
-   <div class="table-div table-responsive" >
-    <table class="table table-hover table-bordered">
-        <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">ID</th>
-              <th scope="col">Image</th>
-              <th scope="col">Name</th>
-              <th scope="col">Price</th>
-              <th scope="col">Category</th>
-              <th scope="col">Stock</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody class="table-group-divider">
-            {% for product in products %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ product.product_id }}</td>
-                <td><img src="{{ product.image.url }}" alt=""></td>
-                <td>{{ product.name }}</td>
-                <td>₹{{ product.price }}</td>
-                <td>{{ product.category }}</td>
-                <td>{{ product.stock }}</td>
-                <td><a href="{% url 'product_view' product.id %}" class="btn btn-product">view</a></td>
-            </tr>
-           {% endfor %}
-          </tbody>
-    </table>
+   <div class="table-div">
+    <div class="table-responsive" >
+      <table class="table table-hover table-bordered">
+          <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">ID</th>
+                <th scope="col">Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Category</th>
+                <th scope="col">Stock</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              {% for product in products %}
+              <tr>
+                  <td class="text-nowrap">{{ forloop.counter }}</td>
+                  <td class="text-nowrap">{{ product.product_id }}</td>
+                  <td class="text-nowrap">{% if product.image %}<img src="{{ product.image.url }}" alt="">{% else%}No image{% endif %}</td>
+                  <td class="text-nowrap">{{ product.name }}</td>
+                  <td class="text-nowrap">₹{{ product.price }}</td>
+                  <td class="text-nowrap">{{ product.category }}</td>
+                  <td class="text-nowrap">
+                    {% if product.stock <= 0 %}
+                      <span style="color: red;">Out of Stock</span>
+                    {% else %}
+                        {{ product.stock }}
+                    {% endif %}
+                  </td>
+                  <td class="text-nowrap"><a href="{% url 'product_view' product.id %}" class="btn btn-product">view</a></td>
+              </tr>
+             {% endfor %}
+            </tbody>
+      </table>
+     </div>
    </div>
+ 
    {% else %}  
     <div class="else">
         <div class="p-4 text-center text-box">

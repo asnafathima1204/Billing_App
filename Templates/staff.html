@@ -6,42 +6,45 @@
 <div class="col-lg-10 col-md-9 col-sm-9 page-col">
   <h2 class="p-4">Staff Details</h2>
   {% if users %}
-   <div class="table-div table-responsive" >
-    <table class="table table-hover table-bordered">
-        <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col" class="text-nowrap">First Name</th>
-              <th scope="col" class="text-nowrap">Last Name</th>
-              <th scope="col" class="text-nowrap">Email</th>
-              <th scope="col" class="text-nowrap">Joined</th>
-              <th scope="col" class="text-nowrap">Last login</th>
-              <th scope="col" class="text-nowrap">Staff</th>
-              <th scope="col" class="text-nowrap"></th>
-            </tr>
-          </thead>
-          <tbody class="table-group-divider">
-            {% for user in users %}
-            <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>{{ user.first_name }}</td>
-              <td>{{ user.last_name  }}</td>
-              <td>{{ user.email }}</td>
-              <th>{{ user.date_joined }}</th>
-              <td>{{ user.last_login }}</td>
-              <td>{{ user.is_staff }}</td>
-              <td>
-                {% if user.is_staff %}
-                <a href="{% url 'activate_staff' user.id %}" class="btn btn-danger">Deactivate</a>
-                {% else %}
-                <a href="{% url 'activate_staff' user.id %}" class="btn btn-success">Activate</a>
-                {% endif %}
-            </td>
-            </tr>
-           {% endfor %}
-          </tbody>
-    </table>
-   </div>
+  <div class="table-div">
+    <div class=" table-responsive" >
+      <table class="table table-hover table-bordered">
+          <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col" class="text-nowrap">First Name</th>
+                <th scope="col" class="text-nowrap">Last Name</th>
+                <th scope="col" class="text-nowrap">Email</th>
+                <th scope="col" class="text-nowrap">Joined</th>
+                <th scope="col" class="text-nowrap">Last login</th>
+                <th scope="col" class="text-nowrap">Staff</th>
+                <th scope="col" class="text-nowrap"></th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              {% for user in users %}
+              <tr>
+                <td class="text-nowrap">{{ forloop.counter }}</td>
+                <td class="text-nowrap">{{ user.first_name }}</td>
+                <td class="text-nowrap">{{ user.last_name  }}</td>
+                <td class="text-nowrap">{{ user.email }}</td>
+                <th class="text-nowrap">{{ user.date_joined }}</th>
+                <td class="text-nowrap">{{ user.last_login }}</td>
+                <td class="text-nowrap">{{ user.is_staff }}</td>
+                <td class="text-nowrap">
+                  {% if user.is_staff %}
+                  <a href="{% url 'activate_staff' user.id %}" class="btn btn-danger">Deactivate</a>
+                  {% else %}
+                  <a href="{% url 'activate_staff' user.id %}" class="btn btn-success">Activate</a>
+                  {% endif %}
+              </td>
+              </tr>
+             {% endfor %}
+            </tbody>
+      </table>
+     </div>
+  </div>
+   
   {% else %}
   <div class="else">
     <div class="p-4 text-center text-box">

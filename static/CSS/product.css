@@ -1,3 +1,7 @@
+.form-label{
+    font-weight: 600;
+}
+
 /* product.html */
 .add-product .button{
     text-align:right;
@@ -17,6 +21,11 @@
 }
 .btn-product{
     background-color:lightgray !important;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
 }
 
 
@@ -64,4 +73,19 @@
 .btn-product-submit{
     width:100%;
     background-color:lightgray !important;
+}
+
+/* update_product.html */
+
+.is-active{
+    width: 25px;
+    height: 25px;
+    border: 2px solid #555;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+}
+.update-product-form textarea{
+    width:100% !important;
+    height:19.5vh !important;
 }

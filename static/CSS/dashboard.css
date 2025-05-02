@@ -12,6 +12,11 @@
     width: 40%;
 }
 
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+} 
+
 .row{
     height: 100vh;
     /* overflow: hidden; */
@@ -138,5 +143,9 @@
 
     .list-group-item ,.list-group-item h5{
        font-size: 10px;
+    }
+
+    .alert{
+        width: 80%;
     }
   }

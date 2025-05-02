@@ -24,7 +24,7 @@ def login_page(request):
                 messages.warning(request,"You are not authorized as staff yet. Please wait for admin approval.")
         else:
             if not User.objects.filter(username=email).exists():
-                messages.warning(request,"You are not registered yetr. Please register..!")
+                messages.warning(request,"You are not registered yet. Please register..!")
                 return redirect('signup_page')
             else:
                 messages.error(request,"Wrong password")

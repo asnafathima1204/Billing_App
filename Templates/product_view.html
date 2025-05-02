@@ -9,31 +9,42 @@
    <div class="view-page">
     <h2>Products Details</h2>
     <h4 class="back"><<a href="{% url 'products_list' %}">Back</a></h4>
-    {% if products %}
+    {% if product %}
     <div class="product-div">
         <div class="details-box row">
                 <div class="image-div col-lg-4 col-md-4">
-                    <img src="{{ products.image.url }}" alt="">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="">
+                    {% else %}
+                    <img src="{% static '/img/default.jpg' %}" alt="">
+                    {% endif %}
                 </div>
                 <div class="details-div col-lg-8 col-md-8">
                     <div class="container">
                         <div class="details-content p-4">
-                            <p><strong>ID : </strong>{{ products.product_id }}</p>
-                            <p><strong>Name : </strong>{{ products.name }}</p>
-                            <p><strong>Category : </strong>{{ products.category }}</p>
-                            <p><strong>Description : </strong>{{ products.description }}</p>
-                            <p><strong>Price : </strong>₹{{ products.price }}</p>
-                            <p><strong>Stock : </strong>{{ products.stock }}</p>
-                            <p><strong>Created at : </strong>{{ products.created_at }}</p>
-                            <p><strong>Updated at : </strong>{{ products.updated_at }}</p>
+                            <p><strong>ID : </strong>{{ product.product_id }}</p>
+                            <p><strong>Name : </strong>{{ product.name }}</p>
+                            <p><strong>Category : </strong>{{ product.category }}</p>
+                            <p><strong>Description : </strong>{{ product.description }}</p>
+                            <p><strong>Price : </strong>₹{{ product.price }}</p>
+                            <p>
+                                <strong>Stock : </strong>
+                                {% if product.stock <= 0 %}
+                                    <span style="color: red;">Out of Stock</span>
+                                {% else %}
+                                    {{ product.stock }}
+                                {% endif %}
+                            </p>
+                            <p><strong>Created at : </strong>{{ product.created_at }}</p>
+                            <p><strong>Updated at : </strong>{{ product.updated_at }}</p>
                            
                         </div>
                     </div>
                     
         
                     <div class="view-buttons p-4">
-                        <a href="" class="btn btn-success">Update</a>
-                        <a href="" class="btn btn-danger">Delete</a>
+                        <a href="{% url 'update_product' product.id %}" class="btn btn-success">Update</a>
+                        <a href="{% url 'del_product' product.id %}" onclick="return confirm('Are you sure you want to delete this product?');" class="btn btn-danger">Delete</a>
                     </div>
                 </div>
         </div>
