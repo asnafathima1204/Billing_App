@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'MAIN_APP',
     'STAFF',
     'PRODUCT',
+    'BILLING',
+    'CUSTOMER',
     
 ]
 
