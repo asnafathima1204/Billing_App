@@ -2,9 +2,12 @@ from django.shortcuts import render
 from BILLING.models import *
 
 # Create your views here.
-def invoice_list(request):
+def invoices(request):
     invoices=Invoice.objects.all()
-    return render(request,"billing.html",locals())
+    return render(request,"invoices.html",locals())
+
+def create_invoice(request):
+    return render(request,"create_invoice.html")
 
 
 def view_invoice(request,id):
@@ -19,7 +22,8 @@ def view_invoice(request,id):
     from decimal import Decimal
     tax = total * (Decimal(invoice.gst_percentage) / Decimal(100))
 
-    grand_total = total + tax
+    invoice.grand_total = total + tax
+    invoice.save()
 
 
     return render(request,"view_invoice.html",locals())

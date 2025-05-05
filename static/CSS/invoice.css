@@ -67,3 +67,32 @@
         padding-left:0px;
     }
 }
+
+
+/* create_invoice.html */
+.page-col{
+    min-height: 100vh;
+}
+
+.new-invoice{
+   overflow: auto;
+}
+
+.customer-details,
+.product-details {
+    border: 2px solid #999;
+}
+
+.row{
+    height: auto !important;
+}
+
+.total-invoice-details .right-div{
+    text-align: right;
+    float: right;
+}
+
+.new-customer-div input,
+.new-customer-div textarea{
+    width: 100%;
+}

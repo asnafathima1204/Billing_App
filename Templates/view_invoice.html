@@ -9,7 +9,7 @@
 <div class="col-lg-10 col-md-9 col-sm-9 page-col">
    <section class="view-page">
     <h2>Invoice Details</h2>
-    <h4 class="back"><<a href="{% url 'invoice_list' %}">Back</a></h4>
+    <h4 class="back"><<a href="{% url 'invoices' %}">Back</a></h4>
     <div class="invoice p-4">
         <div class="invoice-content">
             <div class="header-invoice p-4">
@@ -76,7 +76,7 @@
                           <tr class="footer-last-tr" >
                             <th colspan="3" style="border: none;"></th>
                             <td class="footer-text"><strong>Grand Total:</strong></td>
-                            <td   style="text-align: right;"><strong>{{ grand_total|floatformat:2 }}</strong></td>
+                            <td   style="text-align: right;"><strong>{{ invoice.grand_total|floatformat:2 }}</strong></td>
                           </tr>
                          
                     </tfoot>

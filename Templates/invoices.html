@@ -10,7 +10,7 @@
    <h2>Invoice List</h2>
    <div class="add-product">
     <div class="button p-4">
-        <a href="" class="btn btn-add-product"><strong class="add-icon">+</strong> New Bill</a>
+        <a href="{% url 'create_invoice' %}" class="btn btn-add-product"><strong class="add-icon">+</strong> New Bill</a>
     </div>
    </div>
    {% if invoices %}
@@ -34,7 +34,7 @@
                         <td class="text-nowrap">{{ invoice.invoice_no }}</td>
                         <td class="text-nowrap">{{ invoice.customer.fullname }}</td>
                         <td class="text-nowrap">{{ invoice.date }}</td>
-                        <td class="text-nowrap">{{ invoice.total }}</td>
+                        <td class="text-nowrap">{{ invoice.grand_total }}</td>
                         <td class="text-nowrap"><a href="{% url 'view_invoice' invoice.id %}" class="btn btn-product">View Invoice</a></td>
                     </tr>
                 {% endfor %}
