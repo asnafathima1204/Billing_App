@@ -18,16 +18,7 @@ class Product(models.Model):
     is_active=models.BooleanField(default=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
-    gst_percentage=models.DecimalField(max_digits=5,decimal_places=2,default=0)
 
-    def save(self,*args,**kwargs):
-        if self.category == "groceries":
-            self.gst_percentage = 5
-        elif self.category == "suppliers":
-            self.gst_percentage = 8
-        else:
-            self.gst_percentage = 0
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

@@ -1,0 +1,69 @@
+
+.invoice{
+    display: flex;
+    flex-direction: column;
+    height: auto; /* or remove this if needed */
+    min-height: 50vh;
+    background-color: #fff;
+    padding: 2rem;
+    margin: 2rem;
+}
+
+.top-header{
+    display:flex;
+    justify-content:space-between;
+}
+.header-hr{
+    border:1px solid #000;
+    opacity:1;
+    margin-top:0px !important;
+}
+.content-bill-to{
+    line-height:0.5rem;
+}
+.msg{
+    text-align:center;
+}
+.invoice-table{
+    border-top:2px solid #000;
+
+}
+.table-head{
+    border-bottom:2px solid #000;
+}
+.table-body{
+    border-bottom:2px solid #000;
+}
+.bill-to,
+.payment-details,
+.total-details{
+    width:50%;
+}
+.footer-last-tr td {
+    border-bottom: 2px solid #000;
+    border-top: 2px solid #000;
+}
+.table-foot .footer-text{
+    text-align:right;
+}
+.header-left .btn{
+    justify-content:space-between;
+}
+
+@media (max-width: 600px) {
+    .p-4 {
+        padding: 0.5rem !important;
+    }
+    .invoice{
+        font-size:9px;
+    }
+    .invoice h6{
+        font-size:11px;
+    }
+    .view-page{
+        margin-bottom:10vh;
+    }
+    .list-group {
+        padding-left:0px;
+    }
+}

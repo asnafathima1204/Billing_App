@@ -1,0 +1,104 @@
+{% extends 'extends.html' %}
+{% load static %}
+{% block title %}View Invoice{% endblock %}
+{% block link %}
+<link rel="stylesheet" href="{% static '/CSS/product.css' %}">
+<link rel="stylesheet" href="{% static '/CSS/invoice.css' %}">
+{% endblock %}
+{% block content %}
+<div class="col-lg-10 col-md-9 col-sm-9 page-col">
+   <section class="view-page">
+    <h2>Invoice Details</h2>
+    <h4 class="back"><<a href="{% url 'invoice_list' %}">Back</a></h4>
+    <div class="invoice p-4">
+        <div class="invoice-content">
+            <div class="header-invoice p-4">
+                <div class="top-header">
+                  <div class="header-left d-flex" >
+                      <div>
+                        <h1>INVOICE</h1>
+                      </div>
+                      <div>
+                       
+                      </div>
+                    </div>
+                    <div class="header-right">
+                      <p><strong>Invoice no: </strong>#INV{{ invoice.invoice_no }}</p>
+                      <p><strong>Date:</strong>{{ invoice.date|date:"Y-m-d" }}</p>
+                      <p><strong>Time:</strong>{{ invoice.date|time:"h:i A" }}</p>
+                    </div>
+                </div>
+                <div class="bottom-header">
+                  <div class="bill-to">
+                      <h6 class="">BILLED TO</h6>
+                      <hr class="header-hr">
+                       <div class="content-bill-to">
+                          <h6>{{ invoice.customer.fullname }}</h6>
+                          <p>{{ invoice.customer.address }}</p>
+                          <p>+91 {{ invoice.customer.phone }}</p>
+                       </div>
+                  </div>
+                </div>
+              </div>
+              <div class="content-invoice p-4">
+                  <table class="table invoice-table">
+                      <thead class="table-head">
+                        <tr>
+                          <th scope="col" style="width: 2%;">#</th>
+                          <th scope="col" style="width: 50%;">Item Description</th>
+                          <th scope="col"  style="text-align: right;">Quantity</th>
+                          <th scope="col"   style="text-align: right;">Unit Price</th>
+                          <th scope="col"   style="text-align: right;">Sub total</th>
+                        </tr>
+                      </thead>
+                      <tbody  class="table-body">
+                        {% for item in invoiceItem %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td>{{ item.product.name }}/{{ item.product.description}}</td>
+                          <td   style="text-align: right;">{{ item.quantity }}</td>
+                          <td  style="text-align: right;">{{ item.product.price }}</td>
+                          <td   style="text-align: right;">{{ item.sub_total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="table-foot">
+                          <tr>
+                            <th colspan="3" style="border: none;"></th>
+                            <td class="footer-text">Total:</td>
+                            <td   style="text-align: right;">{{ total }}</td>
+                          </tr>
+                          <tr>
+                            <th colspan="3" style="border: none;"></th>
+                            <td class="footer-text">Tax(5%):</td>
+                            <td   style="text-align: right;">{{ tax|floatformat:2 }}</td>
+                          </tr>
+                          <tr class="footer-last-tr" >
+                            <th colspan="3" style="border: none;"></th>
+                            <td class="footer-text"><strong>Grand Total:</strong></td>
+                            <td   style="text-align: right;"><strong>{{ grand_total|floatformat:2 }}</strong></td>
+                          </tr>
+                         
+                    </tfoot>
+                        
+                    
+                    </table>
+                    
+              </div>
+              
+        </div>
+        
+    
+        <div class="msg p-4">
+            <div>
+                <p>Thanks for your shopping!!</p>
+                <a href="" class="btn btn-product btn-sm"><i class="fa-solid fa-download"></i> Download</a>
+            </div>
+        </div>
+    </div>
+     
+   
+   </section>
+  
+</div>
+{% endblock %}
