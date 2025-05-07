@@ -12,31 +12,54 @@
         <h4 class="back"><<a href="{% url 'invoices' %}">Back</a></h4>
         <div class="bg-white new-invoice">
             <div class="form-div p-4">
-                <form action="">
+                <!-- <form action=""> -->
                     <div class="row">
                         <div class="col-lg-6">
                                 <div class="customer-details p-4">
                                     <h4>Customer Information:</h4>
+                                    {% if customer %}
+                                    <p><strong>Name: </strong>{{ customer.fullname }}</p>
+                                    <p><strong>Phone: </strong>+91 {{ customer.phone }}</p>
+                                    <p><strong>Address: </strong>{{ customer.address }}</p>
+                                    {% else %}
                                     <div class="customer-btn">
                                         <button class="btn btn-success" onclick="new_customer()">New Customer</button>
                                         <button class="btn btn-primary"  onclick="exisiting_customer()">Existing</button>
                                     </div>
+                                    {% endif %}
                                     <div class="new-customer-div p-4"  id="new-customer-div" style="display: none;">
-                                        <div class="mb-3 ">
-                                            <label for="fullname">Fullname *</label><br>
-                                            <input type="text" id="fullname" name="fullname" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="phone" >Phone Number *</label><br>
-                                            <input type="text" id="phone" name="phone" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="address" >Address *</label><br>
-                                            <textarea  name="address" id="address"></textarea>
-                                        </div> 
+                                    <form action="{% url 'new_customer' %}" class="new_cumstomer" method="post">
+                                        {% csrf_token %}
+                                            <div class="mb-3 ">
+                                                <label for="fullname">Fullname *</label><br>
+                                                <input type="text" id="fullname" name="fullname" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="phone">Phone Number *</label><br>
+                                                <div style="display: flex;">
+                                                    <span style="padding: 8px; background: #eee; border: 1px solid #ccc; border-right: none;">+91</span>
+                                                    <input type="text" id="phone" name="phone" required 
+                                                           style="flex: 1; border: 1px solid #ccc; border-left: none;">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="address" >Address *</label><br>
+                                                <textarea  name="address" id="address"></textarea>
+                                            </div> 
+                                            <button type="submit" class="btn btn-primary w-100">Save Customer</button>
+                                        </form>
                                     </div>
                                     <div class="existing-customer-div p-4" id="existing-customer-div" style="display: none;">
-                                        <input  type="text" id="existing_customer" name="existing_customer" required>
+                                       <form action="{% url 'existing_customer' %}" method="post">
+                                        {% csrf_token %}
+                                            <label for="phone">Phone Number:</label>
+                                            <select name="phone" id="phone" class="w-100" style="margin-bottom: 5vh;">
+                                                {% for customer in customers %}
+                                                <option value="{{ customer.phone }}">+91 {{ customer.phone }}/{{ customer.fullname }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <button type="submit" class="btn btn-primary w-100">Submit</button>
+                                       </form>
                                     </div>
                                 </div>
                         </div>
@@ -48,36 +71,49 @@
                                 <table class="table table-bordered" id="table">
                                     <thead>
                                         <tr>
-                                            <th><button  style="margin: 0px 5px;" class="btn btn-success btn-sm" onclick="add_tr()"><i class="fa-solid fa-plus"></i></button> Product</th>
+                                            <th><button  style="margin: 0px 5px;" class="btn btn-success btn-sm" onclick="add_product()"><i class="fa-solid fa-plus"></i></button> Product</th>
                                             <th>Qty</th>
                                             <th>Price</th>
                                             <th>Sub Total</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="mb-3 d-flex">
-                                                    <button type="button"  style="margin: 0px 5px;" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i></button>
-                                                    <input type="text" id="product" name="product" required>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="mb-3">
-                                                    <input type="number" id="qty" name="qty" required>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="mb-3">
-                                                    <input type="number" id="price" name="price" disabled>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="mb-3">
-                                                    <input type="number" id="sub_total" name="sub_total" disabled>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                    <tbody id="product-items">
+                                            <tr id="product-item" class="product_item">
+                                             <td>
+                                                        <div class="mb-3 d-flex">
+                                                            <button type="button"  style="margin: 0px 5px;" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i></button>
+                                                            <select name="product" id="product" class="w-100 product" onchange="updatePrice(this)">
+                                                                {% for product in products %}
+                                                                <option value="{{ product.name }}" data-price="{{ product.price }}" data-target="#product-details-{{ product.id }}">{{ product.name }}/{{ product.description }}</option>                                                                
+                                                                {% endfor %}
+                                                            </select>
+                                                            <!-- <template id="product-options-template">
+                                                                <select name="product" id="product" class="w-100" onchange="updatePrice()">
+                                                                    {% for product in products %}
+                                                                    <option value="{{ product.name }}" data-price="{{ product.price }}">{{ product.name }}/{{ product.description}}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </template> -->
+                                                        
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="mb-3">
+                                                            <input type="number" name="qty" class="qty" value="1" required>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="mb-3">
+                                                            <input type="number"  name="price" class="price" id="price"  disabled>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="mb-3">
+                                                            <input type="number" name="sub_total" class="sub_total" disabled>
+                                                        </div>
+                                                    </td>
+                                                
+                                            </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -95,12 +131,41 @@
                     <div class="submit-btn">
                         <button type="submit" class="btn-product btn w-100">Save Invoice</button>
                     </div>
-                </form>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
 {% block script %}
+<script>
+
+function updatePrice(el) {
+    const item = el.closest('.product_item'); // Find the closest product item row
+    const product = item.querySelector('.product'); // Get the product select element
+    const selectedOption = product.options[product.selectedIndex]; // Get the selected option
+    const price = parseFloat(selectedOption.dataset.price || 0); // Get the price from data-price attribute
+    console.log(price)
+    // Find the price input field and update its value
+    const priceInput = item.querySelector(".price");
+
+    priceInput.value = price.toFixed(2); // Set the price input value
+}
+
+
+function add_product(){
+    const productItems = document.getElementById("product-items");
+    const productItem = document.getElementById("product-item");
+    const clone = productItem.cloneNode(true);
+
+    // Reset values in the cloned row
+    clone.querySelector(".product").selectedIndex = 0;
+    clone.querySelector(".qty").value = 1;
+    clone.querySelector(".price").value = "0.00";
+    clone.querySelector(".sub_total").value = "0.00";
+    productItems.appendChild(clone);
+}
+
+</script>
+
 <script src="{% static '/JS/invoice.js' %}"></script>
 {% endblock %}

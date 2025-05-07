@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from BILLING.models import *
+from django.contrib import messages
 
 # Create your views here.
 def invoices(request):
@@ -7,7 +8,48 @@ def invoices(request):
     return render(request,"invoices.html",locals())
 
 def create_invoice(request):
-    return render(request,"create_invoice.html")
+    customers=Customer.objects.all()
+    products=Product.objects.all()
+    phone=request.session.get("phone")
+    if phone:
+        customer=Customer.objects.get(phone=phone)
+        del request.session['phone']
+        print(customer)
+
+
+    if request.method == "POST":
+        pass
+    return render(request,"create_invoice.html",locals())
+
+def invoice_product(request):
+    # if request.method
+    return redirect('create_invoice.html')
+
+def new_customer(request):
+    if request.method == "POST":
+        fullname=request.POST.get("fullname")
+        phone=request.POST.get("phone")
+        address=request.POST.get("address")
+
+        customer=Customer.objects.create(
+            fullname=fullname,
+            phone=phone,
+            address=address
+        )
+        
+
+        customer.save()
+        messages.success(request,"New Customer Added Successfully")
+        return redirect('create_invoice')
+    
+    return redirect('create_invoice')
+
+def existing_customer(request):
+    if request.method == "POST":
+        phone=request.POST.get("phone")
+        request.session['phone'] = phone
+        return redirect('create_invoice')
+    return redirect('create_invoice')
 
 
 def view_invoice(request,id):

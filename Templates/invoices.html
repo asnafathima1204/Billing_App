@@ -31,7 +31,7 @@
                 {% for invoice in invoices %}
                     <tr>
                         <td class="text-nowrap">{{ forloop.counter }}</td>
-                        <td class="text-nowrap">{{ invoice.invoice_no }}</td>
+                        <td class="text-nowrap">#INV{{ invoice.id }}</td>
                         <td class="text-nowrap">{{ invoice.customer.fullname }}</td>
                         <td class="text-nowrap">{{ invoice.date }}</td>
                         <td class="text-nowrap">{{ invoice.grand_total }}</td>

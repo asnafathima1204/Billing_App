@@ -6,12 +6,12 @@ from PRODUCT.models import *
 class Invoice(models.Model):
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     date=models.DateTimeField(auto_now_add=True)
-    invoice_no=models.CharField(max_length=10,unique=True,default=None)
+    # invoice_no=models.CharField(max_length=10,unique=True,default=None)
     gst_percentage=models.IntegerField(default=5)
     grand_total=models.IntegerField(default=0)
 
     def __str__(self):
-        return f"Invoice {self.invoice_no}"
+        return f"Invoice {self.id}"
     
     
 class InvoiceItem(models.Model):
