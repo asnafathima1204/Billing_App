@@ -18,7 +18,8 @@ def create_invoice(request):
 
 
     if request.method == "POST":
-        pass
+       product = request.POST.getlist("products[]")
+       print(product)
     return render(request,"create_invoice.html",locals())
 
 def invoice_product(request):
@@ -69,3 +70,5 @@ def view_invoice(request,id):
 
 
     return render(request,"view_invoice.html",locals())
+
+

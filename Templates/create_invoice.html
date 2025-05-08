@@ -12,7 +12,6 @@
         <h4 class="back"><<a href="{% url 'invoices' %}">Back</a></h4>
         <div class="bg-white new-invoice">
             <div class="form-div p-4">
-                <!-- <form action=""> -->
                     <div class="row">
                         <div class="col-lg-6">
                                 <div class="customer-details p-4">
@@ -65,107 +64,78 @@
                         </div>
                         <div class="col-lg-6"></div>
                     </div>
-                    <div class="row p-2">
-                        <div class="product-details">
-                            <div class="table-responsive ">
-                                <table class="table table-bordered" id="table">
-                                    <thead>
-                                        <tr>
-                                            <th><button  style="margin: 0px 5px;" class="btn btn-success btn-sm" onclick="add_product()"><i class="fa-solid fa-plus"></i></button> Product</th>
-                                            <th>Qty</th>
-                                            <th>Price</th>
-                                            <th>Sub Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="product-items">
-                                            <tr id="product-item" class="product_item">
-                                             <td>
-                                                        <div class="mb-3 d-flex">
-                                                            <button type="button"  style="margin: 0px 5px;" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i></button>
-                                                            <select name="product" id="product" class="w-100 product" onchange="updatePrice(this)">
-                                                                {% for product in products %}
-                                                                <option value="{{ product.name }}" data-price="{{ product.price }}" data-target="#product-details-{{ product.id }}">{{ product.name }}/{{ product.description }}</option>                                                                
-                                                                {% endfor %}
-                                                            </select>
-                                                            <!-- <template id="product-options-template">
-                                                                <select name="product" id="product" class="w-100" onchange="updatePrice()">
+                        <div class="row p-2">
+                            <div class="product-details">
+                                <div class="table-responsive ">
+                                    <table class="table table-bordered" id="table">
+                                        <thead>
+                                            <tr>
+                                                <th><button  style="margin: 0px 5px;" class="btn btn-success btn-sm" onclick="addProduct()"><i class="fa-solid fa-plus"></i></button></th>
+                                                <th>Product</th>
+                                                <th>Qty</th>
+                                                <th>Price</th>
+                                                <th>Sub Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="product-items">
+                                                <tr id="product-item" class="product_item">
+                                                    <td>
+                                                         <button style="margin: 0px 5px;" class="btn btn-danger btn-sm" onclick="removeProduct(this)"><i class="fa-solid fa-xmark"></i></button>
+                                                    </td>      
+                                                    <form action="{% url 'create_invoice' %}" method="post">
+                                                        {% csrf_token %}
+                                                    <td>
+                                                            <div class="mb-3 d-flex">
+                                                                <select name="products[]" id="product" class="w-100 product" onchange="updatePrice(this)">
+                                                                    <option value="" selected disabled>Select Product</option> <!-- Default Option -->
                                                                     {% for product in products %}
-                                                                    <option value="{{ product.name }}" data-price="{{ product.price }}">{{ product.name }}/{{ product.description}}</option>
+                                                                    <option value="{{ product.id }}" data-price="{{ product.price }}" data-target="#product-details-{{ product.id }}">{{ product.name }}/{{ product.description }}</option>                                                                
                                                                     {% endfor %}
                                                                 </select>
-                                                            </template> -->
-                                                        
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="mb-3">
-                                                            <input type="number" name="qty" class="qty" value="1" required>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="mb-3">
-                                                            <input type="number"  name="price" class="price" id="price"  disabled>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="mb-3">
-                                                            <input type="number" name="sub_total" class="sub_total" disabled>
-                                                        </div>
-                                                    </td>
-                                                
-                                            </tr>
-                                    </tbody>
-                                </table>
+                                                            
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="mb-3">
+                                                                <input type="number" name="qty" class="qty" value="1" min="1" onchange="updatePrice(this)" required>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="mb-3">
+                                                                <input type="number"  name="price" class="price" id="price" value="0.00"  disabled>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="mb-3">
+                                                                <input type="number" name="sub_total" class="sub_total" value="0.00" disabled>
+                                                            </div>
+                                                        </td>
+                                                </tr>  
+                                        </tbody>
+                                    </table>
+                                </div>
+                            
                             </div>
-                          
                         </div>
-                    </div>
-                   
-                    <div class="total-invoice-details">
-                            <div class="right-div">
-                                <p><strong>Total :</strong><input type="number" id="total" name="total" disabled></p>
-                                <p><strong>Tax(5%) :</strong><input type="number" id="tax" name="tax" disabled></p>
-                                <p><strong>Grand Total :</strong><input type="number" id="grand_total" name="grand_total" disabled></p>
-                            </div>
-                    </div>
-                    <div class="submit-btn">
-                        <button type="submit" class="btn-product btn w-100">Save Invoice</button>
-                    </div>
+                    
+                        <div class="total-invoice-details">
+                                <div class="right-div">
+                                    <p><strong>Total :</strong><input type="number" id="total" name="total" disabled></p>
+                                    <p><strong>Tax(5%) :</strong><input type="number" id="tax" name="tax" disabled></p>
+                                    <p><strong>Grand Total :</strong><input type="number" id="grand_total" name="grand_total" disabled></p>
+                                </div>
+                        </div>
+                        <div class="submit-btn">
+                            <button type="submit" class="btn-product btn w-100">Save Invoice</button>
+                        </div>
+                    </form>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
 {% block script %}
-<script>
 
-function updatePrice(el) {
-    const item = el.closest('.product_item'); // Find the closest product item row
-    const product = item.querySelector('.product'); // Get the product select element
-    const selectedOption = product.options[product.selectedIndex]; // Get the selected option
-    const price = parseFloat(selectedOption.dataset.price || 0); // Get the price from data-price attribute
-    console.log(price)
-    // Find the price input field and update its value
-    const priceInput = item.querySelector(".price");
-
-    priceInput.value = price.toFixed(2); // Set the price input value
-}
-
-
-function add_product(){
-    const productItems = document.getElementById("product-items");
-    const productItem = document.getElementById("product-item");
-    const clone = productItem.cloneNode(true);
-
-    // Reset values in the cloned row
-    clone.querySelector(".product").selectedIndex = 0;
-    clone.querySelector(".qty").value = 1;
-    clone.querySelector(".price").value = "0.00";
-    clone.querySelector(".sub_total").value = "0.00";
-    productItems.appendChild(clone);
-}
-
-</script>
 
 <script src="{% static '/JS/invoice.js' %}"></script>
 {% endblock %}
