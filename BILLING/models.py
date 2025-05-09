@@ -8,7 +8,8 @@ class Invoice(models.Model):
     date=models.DateTimeField(auto_now_add=True)
     # invoice_no=models.CharField(max_length=10,unique=True,default=None)
     gst_percentage=models.IntegerField(default=5)
-    grand_total=models.IntegerField(default=0)
+    total = models.DecimalField(max_digits=15,decimal_places=2,default=0)
+    grand_total=models.DecimalField(max_digits=15,default=0,decimal_places=2)
 
     def __str__(self):
         return f"Invoice {self.id}"
@@ -21,7 +22,7 @@ class InvoiceItem(models.Model):
     sub_total=models.IntegerField(default=0)
 
     def __str__(self):
-        return f"Invoice {self.invoice.invoice_no}"
+        return f"Invoice {self.invoice.customer.fullname}"
 
 
 

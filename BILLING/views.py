@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from BILLING.models import *
 from django.contrib import messages
+from decimal import Decimal
 
 # Create your views here.
 def invoices(request):
@@ -11,20 +12,57 @@ def create_invoice(request):
     customers=Customer.objects.all()
     products=Product.objects.all()
     phone=request.session.get("phone")
+    customer = None
+    total = 0
+
+    
     if phone:
-        customer=Customer.objects.get(phone=phone)
-        del request.session['phone']
-        print(customer)
-
-
+        try:
+            customer=Customer.objects.get(phone=phone)
+        except Customer.DoesNotExist:
+            messages.error(request, "Customer not found. Please select a valid customer.")
+            return redirect('create_invoice')
+    
     if request.method == "POST":
-       product = request.POST.getlist("products[]")
-       print(product)
+        if not customer:
+            messages.error(request, "No customer selected. Please select a customer.")
+            return redirect('create_invoice')
+        
+        
+        products = request.POST.getlist("products[]")
+        if not products:
+            messages.error(request,"Did you forget to select the product?")
+            return redirect('create_invoice')
+            
+        invoice=Invoice.objects.create(customer=customer)
+        qtys = request.POST.getlist("qty[]")
+
+        for i in range(len(products)):
+            product=Product.objects.get(id=products[i])
+            sub_total = product.price * Decimal(qtys[i])
+            print(invoice)
+            invoiceItem=InvoiceItem.objects.create(
+                invoice=invoice,
+                product=product,
+                quantity=qtys[i],
+                sub_total=sub_total
+            )
+
+            total += invoiceItem.sub_total
+            invoice.total = total
+            tax = total * (Decimal(invoice.gst_percentage/100))
+        
+        grand_total = total + tax
+        invoice.grand_total = grand_total
+        invoice.save()
+        del request.session['phone']
+        messages.success(request,"Invoice created succesfully")
+        return redirect('invoices')
+
+       
     return render(request,"create_invoice.html",locals())
 
-def invoice_product(request):
-    # if request.method
-    return redirect('create_invoice.html')
+
 
 def new_customer(request):
     if request.method == "POST":
@@ -56,19 +94,8 @@ def existing_customer(request):
 def view_invoice(request,id):
     invoice=Invoice.objects.get(id=id)
     invoiceItem=InvoiceItem.objects.filter(invoice=invoice)
-    total=0
 
-    for item in invoiceItem:
-        item.sub_total = item.quantity * item.product.price
-        total += item.sub_total
-
-    from decimal import Decimal
-    tax = total * (Decimal(invoice.gst_percentage) / Decimal(100))
-
-    invoice.grand_total = total + tax
-    invoice.save()
-
-
+    tax = invoice.total * Decimal(invoice.gst_percentage/100)
     return render(request,"view_invoice.html",locals())
 
 
