@@ -43,7 +43,7 @@
                             {% if user.is_superuser %}
                             <a href="{% url 'staff' %}" class="list-group-item"><span><i class="fa-solid fa-user-tie"></i></span> <p>Staff</p></a>
                             {% endif %}
-                            <a class="list-group-item"><span><i class="fa-solid fa-user"></i></span><p>Customer</p></a>
+                            <a href="{% url 'customers' %}" class="list-group-item"><span><i class="fa-solid fa-user"></i></span><p>Customer</p></a>
                             <a href="{% url 'products_list' %}" class="list-group-item"><span><i class="fa-solid fa-layer-group"></i></span><p>Product</p></a>
                             <a href="{% url 'invoices' %}" class="list-group-item"><span><i class="fa-solid fa-folder-open"></i></span><p>Bill System</p></a>
                         </ul>

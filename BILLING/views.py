@@ -2,6 +2,9 @@ from django.shortcuts import render,redirect
 from BILLING.models import *
 from django.contrib import messages
 from decimal import Decimal
+from django.template.loader import get_template
+from django.http import HttpResponse
+from xhtml2pdf import pisa
 
 # Create your views here.
 def invoices(request):
@@ -99,3 +102,26 @@ def view_invoice(request,id):
     return render(request,"view_invoice.html",locals())
 
 
+def render_to_pdf(html_page,context):
+    template = get_template(html_page)
+    html = template.render(context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="invoice.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest = response)
+
+
+    return response if not pisa_status.err else HttpResponse('Error creating pdf')
+
+def invoice_pdf(request,id):
+    invoice=Invoice.objects.get(id=id)
+    invoice_item = InvoiceItem.objects.filter(invoice=invoice)
+    gst = Decimal(invoice.gst_percentage/100)
+    tax = invoice.total * gst
+
+
+    context={
+        'invoice':invoice,
+        'invoice_item':invoice_item,
+        'tax':tax
+    }
+    return render_to_pdf("invoice_pdf.html",context)
