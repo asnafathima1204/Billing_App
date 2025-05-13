@@ -1,10 +1,20 @@
 from django.shortcuts import render,redirect
 from .models import *
 from django.contrib import messages
+from django.db.models import Q
 
 # Create your views here.
 def products_list(request):
-    products=Product.objects.all()
+    if request.method == "GET":
+        search=request.GET.get("search")
+        print(search)
+        if search:
+            products=Product.objects.filter(
+                Q(name__icontains=search)|
+                Q(category__icontains=search)|
+                Q(product_id__icontains=search))
+        else:
+            products=Product.objects.all()
     return render(request,"product.html",locals())
 
 

@@ -3,62 +3,99 @@
 {% block title %}Dashboard{% endblock %}
 {% block link %}{% endblock %}
 {% block content %}
-<div class="col-lg-10 col-md-9 col-sm-9 page-col">gunhujkmmjjjjjjjjj
-    cygvjhknml,
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
+<div class="col-lg-10 col-md-9 col-sm-9 page-col">
+    <div class="dashboard-content p-4">
+        <div class="row p-4" style="height: auto;">
+            <div class="col-lg-4">
+                <div class="dashboard-box">
+                    <div class="box-content">
+                        <h6>Total Invoice</h6>
+                        <h1>{{ invoices }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="dashboard-box">
+                    <div class="box-content">
+                        <h6>Total Invoice Amount</h6>
+                        <h1>₹{{ total_invoice_amount|floatformat:2 }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="dashboard-box">
+                    <div class="box-content">
+                        <h6>Total Customer</h6>
+                        <h1>{{ customers }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="dashboard-box">
+                    <div class="box-content">
+                        <h6>Items in Stock</h6>
+                        <h1>{{ stocks }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="dashboard-box">
+                    <div class="box-content">
+                        <h6>Total Product</h6>
+                        <h1>{{ products }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="dashboard-box">
+                    <div class="box-content">
+                        <h6>Total Staff</h6>
+                        <h1>{{ staffs }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="height: auto;">
+            <div class="recent-invoice">
+                <h1>Recent Invoices</h1>
+                <div class="invoice-content">
+                    {% if recent_invoice %}
+                    <div class="table-div">
+                        <div class="table-responsive" >
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Invoice No</th>
+                                    <th scope="col">Customer</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Total</th>
+                                </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                    {% for invoice in recent_invoice %}
+                                    <tr>
+                                        <td class="text-nowrap">{{ forloop.counter }}</td>
+                                        <td class="text-nowrap">#INV{{ invoice.id }}</td>
+                                        <td class="text-nowrap">{{ invoice.customer.fullname }}</td>
+                                        <td class="text-nowrap">{{ invoice.date }}</td>
+                                        <td class="text-nowrap">{{ invoice.grand_total }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                        </table>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="else">
+                            <div class="p-4 text-center text-box">
+                            <h4>No Invoice found!</h4>
+                            </div>
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    </div>
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    </div>
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    </div>
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    </div>
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    </div>
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    </div>
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    </div>
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    </div>
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    </div>
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    </div>
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    </div>
-    <div>
-        
-    fyguhjikl;  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla quia iure quae mollitia atque obcaecati dignissimos harum quasi vitae repellendus, eligendi deleniti enim, cupiditate, libero esse. Magnam esse iusto quasi!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis optio quidem rerum cupiditate iste laudantium sapiente et magnam, illum aut dolorum atque porro earum officiis velit quis quo, soluta necessitatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati neque ab officiis eos nostrum quis. Dolor at doloremque quis officiis natus, tenetur dicta suscipit odit iure eveniet consectetur ducimus vitae.
-    </div>
-
-
 </div>
 {% endblock %}

@@ -5,15 +5,33 @@ from decimal import Decimal
 from django.template.loader import get_template
 from django.http import HttpResponse
 from xhtml2pdf import pisa
+from django.db.models import Q
+from datetime import datetime
 
 # Create your views here.
 def invoices(request):
-    invoices=Invoice.objects.all()
+    if request.method == "GET":
+        search=request.GET.get("search")
+        date=request.GET.get("date")
+        invoices=Invoice.objects.all()
+        if search:
+            search_conditions=Q(customer__fullname__icontains=search)|Q(id__icontains=search)
+            
+            if search.replace('.','',1).isdigit():
+                search_conditions |= Q(grand_total__gt=search)
+
+            invoices=Invoice.objects.filter(search_conditions)
+
+        elif date:
+            invoices=Invoice.objects.filter(date__date=date)
+
+        else:
+            invoices=Invoice.objects.all()
     return render(request,"invoices.html",locals())
 
 def create_invoice(request):
     customers=Customer.objects.all()
-    products=Product.objects.all()
+    products=Product.objects.filter(stock__gt=0)
     phone=request.session.get("phone")
     customer = None
     total = 0
@@ -50,10 +68,12 @@ def create_invoice(request):
                 quantity=qtys[i],
                 sub_total=sub_total
             )
-
+            
+            product.stock -= int(invoiceItem.quantity)
+            product.save()
             total += invoiceItem.sub_total
-            invoice.total = total
-            tax = total * (Decimal(invoice.gst_percentage/100))
+        invoice.total = total
+        tax = total * (Decimal(invoice.gst_percentage/100))
         
         grand_total = total + tax
         invoice.grand_total = grand_total

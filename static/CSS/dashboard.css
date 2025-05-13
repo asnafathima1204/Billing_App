@@ -92,6 +92,22 @@
     margin: auto;
 }
 
+.dashboard-content .dashboard-box{
+    text-align: center;
+    height: 25vh;
+
+}
+
+.dashboard-box .box-content{
+    background-color: #fff;
+    margin: auto;
+    padding: 1rem;
+    height: 20vh;
+}
+
+.recent-invoice{
+    background-color: #eee;
+}
 @media (max-width: 575.98px) {
 
     .icon-col{

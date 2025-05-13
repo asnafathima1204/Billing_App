@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,login,logout
+from django.utils import timezone
+from django.db.models import Sum,Q
+
+from BILLING.models import *
+from PRODUCT.models import *
+from CUSTOMER.models import *
 
 # Create your views here.
 def index(request):
@@ -68,4 +74,13 @@ def signup_page(request):
 
 @login_required
 def dashboard(request):
-    return render(request,'dashboard.html')
+    invoices=Invoice.objects.all().count()
+    customers=Customer.objects.all().count()
+    products=Product.objects.all().count()
+    staffs=User.objects.filter(is_staff=True,is_superuser=False).count()
+
+    today = timezone.now().date()
+    recent_invoice=Invoice.objects.filter(date__date=today)
+    total_invoice_amount=Invoice.objects.all().aggregate(total_sum=(Sum('grand_total')))['total_sum'] or 0.00
+    stocks = Product.objects.filter(stock__gt=0).count()
+    return render(request,'dashboard.html',locals())

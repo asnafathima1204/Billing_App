@@ -6,7 +6,6 @@ from PRODUCT.models import *
 class Invoice(models.Model):
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     date=models.DateTimeField(auto_now_add=True)
-    # invoice_no=models.CharField(max_length=10,unique=True,default=None)
     gst_percentage=models.IntegerField(default=5)
     total = models.DecimalField(max_digits=15,decimal_places=2,default=0)
     grand_total=models.DecimalField(max_digits=15,default=0,decimal_places=2)

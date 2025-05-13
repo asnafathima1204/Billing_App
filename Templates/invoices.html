@@ -9,8 +9,24 @@
     
    <h2>Invoice List</h2>
    <div class="add-product">
-    <div class="button p-4">
-        <a href="{% url 'create_invoice' %}" class="btn btn-add-product"><strong class="add-icon">+</strong> New Bill</a>
+    <div class="row" style="height: auto;">
+        <div class="col-lg-9">
+          <div class="search-div p-4">
+                <div class="search-content">
+                <form action="{% url 'invoices' %}" method="get">
+                    {% csrf_token %}
+                    <input type="text" class="search-input" name="search">
+                    <input type="date" name="date">
+                    <button type="submit" class="btn btn-product search-btn">Search</button>
+                  </form>
+                </div>
+          </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="button p-4">
+                <a href="{% url 'create_invoice' %}" class="btn btn-add-product"><strong class="add-icon">+</strong> New Bill</a>
+            </div>
+        </div>
     </div>
    </div>
    {% if invoices %}

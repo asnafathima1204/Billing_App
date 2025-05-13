@@ -89,3 +89,24 @@
     width:100% !important;
     height:19.5vh !important;
 }
+
+
+
+
+.search-content{
+    background-color: #fff;
+    padding: 5px 10px;
+}
+
+.search-content .search-input{
+    width: 63%;
+    height: 5vh;
+}
+
+.search-btn{
+    font-size: 14px;
+    font-weight: bold;
+    width: 18%;
+    height: 5vh;
+    margin-top: -5px;
+}
