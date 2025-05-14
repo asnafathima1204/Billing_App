@@ -15,12 +15,8 @@ def invoices(request):
         date=request.GET.get("date")
         invoices=Invoice.objects.all()
         if search:
-            search_conditions=Q(customer__fullname__icontains=search)|Q(id__icontains=search)
-            
-            if search.replace('.','',1).isdigit():
-                search_conditions |= Q(grand_total__gt=search)
-
-            invoices=Invoice.objects.filter(search_conditions)
+            invoices=Invoice.objects.filter(Q(customer__fullname__icontains=search)|Q(id__icontains=search)|Q(grand_total__icontains=search))
+           
 
         elif date:
             invoices=Invoice.objects.filter(date__date=date)
@@ -31,7 +27,7 @@ def invoices(request):
 
 def create_invoice(request):
     customers=Customer.objects.all()
-    products=Product.objects.filter(stock__gt=0)
+    products=Product.objects.filter(stock__gt=0).order_by('name')
     phone=request.session.get("phone")
     customer = None
     total = 0
