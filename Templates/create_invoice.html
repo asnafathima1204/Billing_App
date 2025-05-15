@@ -54,6 +54,7 @@
                                         {% csrf_token %}
                                             <label for="phone">Phone Number:</label>
                                             <select name="phone" id="phone" class="w-100" style="margin-bottom: 5vh;">
+                                                <option value="" selected disabled>Select Customer</option> <!-- Default Option -->
                                                 {% for customer in customers %}
                                                 <option value="{{ customer.phone }}">+91 {{ customer.phone }}/{{ customer.fullname }}</option>
                                                 {% endfor %}
@@ -67,7 +68,7 @@
                     </div>
                         <div class="row p-2">
                             <div class="product-details">
-                                <div class="table-responsive ">
+                                <div class="table-responsive scroll-table">
                                 <form action="{% url 'create_invoice' %}" method="post">
                                 {% csrf_token %}
                                     <table class="table table-bordered" id="table">

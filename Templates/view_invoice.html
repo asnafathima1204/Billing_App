@@ -28,14 +28,21 @@
                       <p><strong>Time:</strong>{{ invoice.date|time:"h:i A" }}</p>
                     </div>
                 </div>
-                <div class="bottom-header">
-                  <div class="bill-to">
+                <div class="bottom-header row">
+                  <div class="bill-to col-lg-6">
                       <h6 class="">BILLED TO</h6>
                       <hr class="header-hr">
                        <div class="content-bill-to">
                           <h6>{{ invoice.customer.fullname }}</h6>
                           <p>{{ invoice.customer.address }}</p>
                           <p>+91 {{ invoice.customer.phone }}</p>
+                       </div>
+                  </div>
+                  <div class="sent-by col-lg-6">
+                      <h6 class="">SENT BY</h6>
+                      <hr class="header-hr">
+                       <div class="content-bill-to">
+                          <h6>{{ invoice.staff.first_name }} {{ invoice.staff.last_name }}</h6>
                        </div>
                   </div>
                 </div>
@@ -58,7 +65,7 @@
                           <td>{{ item.product.name }}/{{ item.product.description}}</td>
                           <td   style="text-align: right;">{{ item.quantity }}</td>
                           <td  style="text-align: right;">{{ item.product.price }}</td>
-                          <td   style="text-align: right;">{{ item.sub_total }}</td>
+                          <td   style="text-align: right;">{{ item.sub_total|floatformat:2 }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

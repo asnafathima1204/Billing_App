@@ -17,6 +17,7 @@
     border:1px solid #000;
     opacity:1;
     margin-top:0px !important;
+    width: 80%;
 }
 .content-bill-to{
     line-height:0.5rem;
@@ -35,7 +36,7 @@
     border-bottom:2px solid #000;
 }
 .bill-to,
-.payment-details,
+.sent-by,
 .total-details{
     width:50%;
 }
@@ -48,6 +49,17 @@
 }
 .header-left .btn{
     justify-content:space-between;
+}
+
+.scroll-table tbody {
+      display: block;
+      max-height: 250px; /* Adjust height as needed */
+      overflow-y: auto;
+}
+.scroll-table thead, .scroll-table tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed; /* Ensures columns align */
 }
 
 @media (max-width: 600px) {

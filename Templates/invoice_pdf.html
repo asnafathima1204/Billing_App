@@ -56,6 +56,7 @@
 hr{
     margin: 0;
     padding: 0;
+    width: 80%;
 }
 .header-hr{
     border:1px solid #000;
@@ -65,12 +66,17 @@ hr{
     line-height: 0px;
     margin-top:0px !important;
     margin-bottom: 0px !important;
+    width: 80%;
 }
-.bill-to{
+.bill-to,.send-by{
     margin: 0px;
     padding: 0px;
 }
-.bill-to h6{
+.send-by{
+    text-align: left;
+}
+.bill-to h6,
+.send-by h6{
     margin-bottom: 0px;
     padding: 0;
 }
@@ -91,7 +97,7 @@ hr{
     border-bottom:2px solid #000;
 }
 .bill-to,
-.payment-details,
+.send-by,
 .total-details{
     width:50%;
 }
@@ -153,9 +159,16 @@ hr{
                                 <p>+91 {{ invoice.customer.phone }}</p>
                             </div>
                         </div>
+                       
                     </td>
                     <td class="header-right">
-
+                         <div class="send-by">
+                            <h6 class="billed-to-text">SENT BY</h6>
+                            <hr class="header-hr">
+                            <div class="content-bill-to">
+                                <h6>{{ invoice.staff.first_name }} {{ invoice.staff.last_name }}</h6>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </table>

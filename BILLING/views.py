@@ -7,8 +7,11 @@ from django.http import HttpResponse
 from xhtml2pdf import pisa
 from django.db.models import Q
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
+@login_required
 def invoices(request):
     if request.method == "GET":
         search=request.GET.get("search")
@@ -25,6 +28,7 @@ def invoices(request):
             invoices=Invoice.objects.all()
     return render(request,"invoices.html",locals())
 
+@login_required
 def create_invoice(request):
     customers=Customer.objects.all()
     products=Product.objects.filter(stock__gt=0).order_by('name')
@@ -51,7 +55,7 @@ def create_invoice(request):
             messages.error(request,"Did you forget to select the product?")
             return redirect('create_invoice')
             
-        invoice=Invoice.objects.create(customer=customer)
+        invoice=Invoice.objects.create(customer=customer,staff=request.user)
         qtys = request.POST.getlist("qty[]")
 
         for i in range(len(products)):
@@ -82,7 +86,7 @@ def create_invoice(request):
     return render(request,"create_invoice.html",locals())
 
 
-
+@login_required
 def new_customer(request):
     if request.method == "POST":
         fullname=request.POST.get("fullname")
@@ -102,6 +106,7 @@ def new_customer(request):
     
     return redirect('create_invoice')
 
+@login_required
 def existing_customer(request):
     if request.method == "POST":
         phone=request.POST.get("phone")
@@ -109,7 +114,7 @@ def existing_customer(request):
         return redirect('create_invoice')
     return redirect('create_invoice')
 
-
+@login_required
 def view_invoice(request,id):
     invoice=Invoice.objects.get(id=id)
     invoiceItem=InvoiceItem.objects.filter(invoice=invoice)
@@ -117,7 +122,7 @@ def view_invoice(request,id):
     tax = invoice.total * Decimal(invoice.gst_percentage/100)
     return render(request,"view_invoice.html",locals())
 
-
+@login_required
 def render_to_pdf(html_page,context):
     template = get_template(html_page)
     html = template.render(context)
@@ -128,6 +133,7 @@ def render_to_pdf(html_page,context):
 
     return response if not pisa_status.err else HttpResponse('Error creating pdf')
 
+@login_required
 def invoice_pdf(request,id):
     invoice=Invoice.objects.get(id=id)
     invoice_item = InvoiceItem.objects.filter(invoice=invoice)

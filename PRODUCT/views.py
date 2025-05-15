@@ -2,8 +2,10 @@ from django.shortcuts import render,redirect
 from .models import *
 from django.contrib import messages
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@login_required
 def products_list(request):
     if request.method == "GET":
         search=request.GET.get("search")
@@ -18,11 +20,13 @@ def products_list(request):
     return render(request,"product.html",locals())
 
 
+@login_required
 def product_view(request,id):
     product=Product.objects.get(id=id)
     return render(request,"product_view.html",locals())
 
 
+@login_required
 def add_product(request):
     if request.method == "POST":
         product_id=request.POST.get("product_id")
@@ -60,6 +64,7 @@ def add_product(request):
     return render(request,"add_product.html",locals())
 
 
+@login_required
 def update_product(request,id):
     product=Product.objects.get(id=id)
     if request.method == "POST":
@@ -84,6 +89,7 @@ def update_product(request,id):
     return render(request,"update_product.html",locals())
 
 
+@login_required
 def del_product(request,id):
     product=Product.objects.get(id=id)
     product.delete()
