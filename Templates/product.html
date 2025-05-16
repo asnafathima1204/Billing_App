@@ -13,9 +13,9 @@
         <div class="col-lg-6">
           <div class="search-div p-4">
                 <div class="search-content">
-                  <form action="{% url 'products_list' %}" method="get">
+                  <form action="{% url 'products_list' %}" method="get" style="width: 100%;">
                     {% csrf_token %}
-                    <input type="text" class="search-input" name="search">
+                    <input type="text" class="search-input" name="search" style="width: 80%;">
                     <button type="submit" class="btn btn-product search-btn">Search</button>
                   </form>
                 </div>

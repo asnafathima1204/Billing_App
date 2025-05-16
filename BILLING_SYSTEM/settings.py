@@ -31,7 +31,8 @@ SECRET_KEY = 'django-insecure-qpjhl=c&2a@sm1skuzeyn-kc+^_)!1x$im7w%!%ymgku%9la6e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+# ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 
 # Application definition
@@ -128,13 +129,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 import os.path
-STATIC_URL = 'static/'
 STATIC_DIR = os.path.join(BASE_DIR,'static')
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_DIR = '/media/'
-STATICFILES_DIRS = [STATIC_DIR, ]
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# LOGIN_URL = '/login_page/'  # Change this to your login page URL
+# LOGIN_REDIRECT_URL = '/dashboard/'  # Redirect after successful login
+# LOGOUT_REDIRECT_URL = '/login_page/'  # Redirect after logout

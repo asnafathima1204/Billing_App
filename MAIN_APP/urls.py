@@ -8,3 +8,4 @@ urlpatterns = [
     path('signup_page/',views.signup_page, name='signup_page'),
     path('dashboard/',views.dashboard, name='dashboard'),
 ]
+handler404 = 'MAIN_APP.views.error_page'

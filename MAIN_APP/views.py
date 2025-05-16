@@ -84,3 +84,7 @@ def dashboard(request):
     total_invoice_amount=Invoice.objects.all().aggregate(total_sum=(Sum('grand_total')))['total_sum'] or 0.00
     stocks = Product.objects.filter(stock__gt=0).count()
     return render(request,'dashboard.html',locals())
+
+
+def error_page(request,exception):
+    return render(request,"404.html",status=404)
