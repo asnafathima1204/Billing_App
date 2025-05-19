@@ -30,62 +30,128 @@ def invoices(request):
             invoices=Invoice.objects.all()
     return render(request,"invoices.html",locals())
 
+# @login_required
+# def create_invoice(request):
+#     phone= phone=request.session.get("phone")
+#     customers=Customer.objects.all()
+#     products=Product.objects.filter(stock__gt=0).order_by('name')
+#     customer = None
+#     total = 0
+#     if not phone:
+#         # messages.error(request, "No customer phone number provided.")
+#         return render(request, "create_invoice.html", locals())
+    
+#     customer = Customer.objects.filter(phone=phone).first()
+#     if not customer:
+#         messages.error(request, "Customer not found. Please select a valid customer.")
+#         return render(request, "create_invoice.html", locals())
+    
+#     if request.method == "POST":
+#         if not customer:
+#             messages.error(request, "No customer selected. Please select a customer.")
+#             return redirect('create_invoice')
+        
+        
+#         products = request.POST.getlist("products[]")
+#         if not products:
+#             messages.error(request,"Did you forget to select the product?")
+#             return redirect('create_invoice')
+            
+#         invoice=Invoice.objects.create(customer=customer,staff=request.user)
+#         qtys = request.POST.getlist("qty[]")
+
+#         for i in range(len(products)):
+#             product=Product.objects.get(id=products[i])
+#             sub_total = product.price * Decimal(qtys[i])
+#             print(invoice)
+#             invoiceItem=InvoiceItem.objects.create(
+#                 invoice=invoice,
+#                 product=product,
+#                 quantity=qtys[i],
+#                 sub_total=sub_total
+#             )
+            
+#             product.stock -= int(invoiceItem.quantity)
+#             product.save()
+#             total += invoiceItem.sub_total
+#         invoice.total = total
+#         tax = total * (Decimal(invoice.gst_percentage/100))
+        
+#         grand_total = total + tax
+#         invoice.grand_total = grand_total
+#         invoice.save()
+#         del request.session['phone']
+#         messages.success(request,"Invoice created succesfully")
+#         return redirect('invoices')
+
+       
+#     return render(request,"create_invoice.html",locals())
+
+
 @login_required
 def create_invoice(request):
-    phone= phone=request.session.get("phone")
-    customers=Customer.objects.all()
-    products=Product.objects.filter(stock__gt=0).order_by('name')
+    phone = request.session.get("phone")
+    customers = Customer.objects.all()
+    products = Product.objects.filter(stock__gt=0).order_by('name')
     customer = None
     total = 0
-    if not phone:
-        # messages.error(request, "No customer phone number provided.")
-        return render(request, "create_invoice.html", locals())
-    
-    customer = Customer.objects.filter(phone=phone).first()
-    if not customer:
-        messages.error(request, "Customer not found. Please select a valid customer.")
-        return render(request, "create_invoice.html", locals())
-    
+
+    # If phone in session, get the customer object
+    if phone:
+        customer = Customer.objects.filter(phone=phone).first()
+
     if request.method == "POST":
+        # On form submit for invoice, check if customer exists
         if not customer:
-            messages.error(request, "No customer selected. Please select a customer.")
+            messages.error(request, "No customer selected. Please select a customer first.")
             return redirect('create_invoice')
-        
-        
-        products = request.POST.getlist("products[]")
-        if not products:
-            messages.error(request,"Did you forget to select the product?")
+
+        # Check if products selected
+        selected_products = request.POST.getlist("products[]")
+        if not selected_products:
+            messages.error(request, "Did you forget to select the product?")
             return redirect('create_invoice')
-            
-        invoice=Invoice.objects.create(customer=customer,staff=request.user)
+
         qtys = request.POST.getlist("qty[]")
 
-        for i in range(len(products)):
-            product=Product.objects.get(id=products[i])
-            sub_total = product.price * Decimal(qtys[i])
-            print(invoice)
-            invoiceItem=InvoiceItem.objects.create(
+        invoice = Invoice.objects.create(customer=customer, staff=request.user)
+        
+        for i in range(len(selected_products)):
+            product = Product.objects.get(id=selected_products[i])
+            requested_qty = int(qtys[i])
+
+            # Check if requested quantity exceeds available stock
+            if requested_qty > product.stock:
+                messages.error(request, f"Requested quantity for {product.name} exceeds available stock ({product.stock}).")
+                invoice.delete()  # Delete the partially created invoice
+                return redirect('create_invoice')
+
+            sub_total = product.price * Decimal(requested_qty)
+            invoice_item = InvoiceItem.objects.create(
                 invoice=invoice,
                 product=product,
-                quantity=qtys[i],
+                quantity=requested_qty,
                 sub_total=sub_total
             )
-            
-            product.stock -= int(invoiceItem.quantity)
+            product.stock -= requested_qty
             product.save()
-            total += invoiceItem.sub_total
+            total += invoice_item.sub_total
+
         invoice.total = total
-        tax = total * (Decimal(invoice.gst_percentage/100))
-        
+        tax = total * (Decimal(invoice.gst_percentage / 100))
         grand_total = total + tax
         invoice.grand_total = grand_total
         invoice.save()
+
+        # Clear the session after invoice created
         del request.session['phone']
-        messages.success(request,"Invoice created succesfully")
+        messages.success(request, "Invoice created successfully")
         return redirect('invoices')
 
-       
-    return render(request,"create_invoice.html",locals())
+    # GET request: just render the invoice creation page
+    return render(request, "create_invoice.html", locals())
+
+
 
 
 @login_required
@@ -102,6 +168,8 @@ def new_customer(request):
                 phone=phone,
                 address=address
             )
+
+            request.session['phone'] = phone
 
             messages.success(request,"New Customer Added Successfully")
             return redirect('create_invoice')

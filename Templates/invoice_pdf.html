@@ -166,7 +166,7 @@ hr{
                             <h6 class="billed-to-text">SENT BY</h6>
                             <hr class="header-hr">
                             <div class="content-bill-to">
-                                <h6>{{ invoice.staff.first_name }} {{ invoice.staff.last_name }}</h6>
+                                    <h6>{% if request.user.is_superuser %}Admin{% else %}{{ invoice.staff.first_name }} {{ invoice.staff.last_name }}{% endif %}</h6>
                             </div>
                         </div>
                     </td>

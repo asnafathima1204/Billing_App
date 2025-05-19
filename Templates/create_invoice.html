@@ -90,10 +90,10 @@
                                                     </td>      
                                                     <td class="text-nowrap">
                                                             <div class="mb-3 d-flex">
-                                                                <select name="products[]" id="product" class="w-100 product" onchange="updatePrice(this)">
+                                                                <select name="products[]" id="product" class="w-100 product " onchange="updatePrice(this)">
                                                                     <option value="" selected disabled>Select Product</option> <!-- Default Option -->
                                                                     {% for product in products %}
-                                                                    <option value="{{ product.id }}" data-price="{{ product.price }}" data-target="#product-details-{{ product.id }}" class="form-control">{{ product.name }}/{{ product.description }}</option>                                                                
+                                                                    <option value="{{ product.id }}" data-price="{{ product.price }}"  data-target="#product-details-{{ product.id }}" class="form-control">{{ product.name }}/{{ product.description }}/Stock:{{ product.stock }}</option>                                                                
                                                                     {% endfor %}
                                                                 </select>
                                                             
