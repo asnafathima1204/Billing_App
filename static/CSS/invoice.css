@@ -51,12 +51,12 @@
     justify-content:space-between;
 }
 
-.scroll-table tbody {
+.scroll-table  {
       display: block;
       max-height: 250px; /* Adjust height as needed */
       overflow-y: auto;
 }
-.scroll-table thead, .scroll-table tbody tr {
+.scroll-table thead, .scroll-table  tr {
       display: table;
       width: 100%;
       table-layout: fixed; /* Ensures columns align */

@@ -38,8 +38,8 @@
                                                 <label for="phone">Phone Number *</label><br>
                                                 <div style="display: flex;">
                                                     <span style="padding: 8px; background: #eee; border: 1px solid #ccc; border-right: none;">+91</span>
-                                                    <input type="text" id="phone" name="phone" required 
-                                                           style="flex: 1; border: 1px solid #ccc; border-left: none;">
+                                                    <input type="tel" id="phone" name="phone" required 
+                                                           style="flex: 1; border: 1px solid #ccc; border-left: none;" minlength="10" maxlength="10" pattern="\d{10}">
                                                 </div>
                                             </div>
                                             <div class="mb-3">
@@ -76,42 +76,42 @@
                                     
                                         <thead>
                                             <tr>
-                                                <th><button type="button"  style="margin: 0px 5px;" class="btn btn-success btn-sm" onclick="addProduct()"><i class="fa-solid fa-plus"></i></button></th>
-                                                <th>Product</th>
-                                                <th>Qty</th>
-                                                <th>Price</th>
-                                                <th>Sub Total</th>
+                                                <th class="text-nowrap"><button type="button"  style="margin: 0px 5px;" class="btn btn-success btn-sm" onclick="addProduct()"><i class="fa-solid fa-plus"></i></button></th>
+                                                <th class="text-nowrap">Product</th>
+                                                <th class="text-nowrap">Qty</th>
+                                                <th class="text-nowrap">Price</th>
+                                                <th class="text-nowrap">Sub Total</th>
                                             </tr>
                                         </thead>
                                         <tbody id="product-items">
                                                 <tr id="product-item" class="product_item">
-                                                    <td>
+                                                    <td class="text-nowrap" >
                                                          <button type="button" style="margin: 0px 5px;" class="btn btn-danger btn-sm" onclick="removeProduct(this)"><i class="fa-solid fa-xmark"></i></button>
                                                     </td>      
-                                                    <td>
+                                                    <td class="text-nowrap">
                                                             <div class="mb-3 d-flex">
                                                                 <select name="products[]" id="product" class="w-100 product" onchange="updatePrice(this)">
                                                                     <option value="" selected disabled>Select Product</option> <!-- Default Option -->
                                                                     {% for product in products %}
-                                                                    <option value="{{ product.id }}" data-price="{{ product.price }}" data-target="#product-details-{{ product.id }}">{{ product.name }}/{{ product.description }}</option>                                                                
+                                                                    <option value="{{ product.id }}" data-price="{{ product.price }}" data-target="#product-details-{{ product.id }}" class="form-control">{{ product.name }}/{{ product.description }}</option>                                                                
                                                                     {% endfor %}
                                                                 </select>
                                                             
                                                             </div>
                                                         </td>
-                                                        <td>
+                                                        <td class="text-nowrap">
                                                             <div class="mb-3">
-                                                                <input type="number" name="qty[]" class="qty" value="1" min="1" onchange="updatePrice(this)" required>
+                                                                <input type="number" name="qty[]" class="qty form-control text-nowrap" value="1" min="1" onchange="updatePrice(this)" required>
                                                             </div>
                                                         </td>
-                                                        <td>
+                                                        <td class="text-nowrap">
                                                             <div class="mb-3">
-                                                                <input type="number"  name="price" class="price" id="price" value="0.00"  disabled>
+                                                                <input type="number"  name="price" class="price form-control text-nowrap" id="price" value="0.00"  disabled>
                                                             </div>
                                                         </td>
-                                                        <td>
+                                                        <td class="text-nowrap">
                                                             <div class="mb-3">
-                                                                <input type="number" name="sub_total" class="sub_total" value="0.00" disabled>
+                                                                <input type="number" name="sub_total" class="sub_total form-control " value="0.00" disabled>
                                                             </div>
                                                         </td>
                                                 </tr>  

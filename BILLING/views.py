@@ -13,6 +13,8 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 @login_required
 def invoices(request):
+    if 'phone' in request.session:
+        del request.session['phone']
     if request.method == "GET":
         search=request.GET.get("search")
         date=request.GET.get("date")
@@ -30,19 +32,19 @@ def invoices(request):
 
 @login_required
 def create_invoice(request):
+    phone= phone=request.session.get("phone")
     customers=Customer.objects.all()
     products=Product.objects.filter(stock__gt=0).order_by('name')
-    phone=request.session.get("phone")
     customer = None
     total = 0
-
+    if not phone:
+        # messages.error(request, "No customer phone number provided.")
+        return render(request, "create_invoice.html", locals())
     
-    if phone:
-        try:
-            customer=Customer.objects.get(phone=phone)
-        except Customer.DoesNotExist:
-            messages.error(request, "Customer not found. Please select a valid customer.")
-            return redirect('create_invoice')
+    customer = Customer.objects.filter(phone=phone).first()
+    if not customer:
+        messages.error(request, "Customer not found. Please select a valid customer.")
+        return render(request, "create_invoice.html", locals())
     
     if request.method == "POST":
         if not customer:
@@ -93,16 +95,19 @@ def new_customer(request):
         phone=request.POST.get("phone")
         address=request.POST.get("address")
 
-        customer=Customer.objects.create(
-            fullname=fullname,
-            phone=phone,
-            address=address
-        )
-        
+        customer=Customer.objects.filter(phone=phone)
+        if not customer:
+            Customer.objects.create(
+                fullname=fullname,
+                phone=phone,
+                address=address
+            )
 
-        customer.save()
-        messages.success(request,"New Customer Added Successfully")
-        return redirect('create_invoice')
+            messages.success(request,"New Customer Added Successfully")
+            return redirect('create_invoice')
+        else:
+            messages.warning(request,"Already have customer with this number")
+            return redirect('create_invoice')
     
     return redirect('create_invoice')
 
@@ -122,7 +127,7 @@ def view_invoice(request,id):
     tax = invoice.total * Decimal(invoice.gst_percentage/100)
     return render(request,"view_invoice.html",locals())
 
-@login_required
+
 def render_to_pdf(html_page,context):
     template = get_template(html_page)
     html = template.render(context)
@@ -133,7 +138,7 @@ def render_to_pdf(html_page,context):
 
     return response if not pisa_status.err else HttpResponse('Error creating pdf')
 
-@login_required
+
 def invoice_pdf(request,id):
     invoice=Invoice.objects.get(id=id)
     invoice_item = InvoiceItem.objects.filter(invoice=invoice)
