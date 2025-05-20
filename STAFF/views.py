@@ -1,11 +1,11 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
  
 # Create your views here.
-@login_required
+@user_passes_test(lambda u:u.is_authenticated and u.is_superuser,login_url='login_page' )
 def staff(request):
-    users = User.objects.exclude(is_superuser=True)
+    users = User.objects.exclude(is_superuser=True).order_by('-id')
     return render(request,"staff.html",locals())
 
 @login_required

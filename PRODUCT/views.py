@@ -16,7 +16,7 @@ def products_list(request):
                 Q(category__icontains=search)|
                 Q(product_id__icontains=search))
         else:
-            products=Product.objects.all()
+            products=Product.objects.all().order_by('-product_id')
     return render(request,"product.html",locals())
 
 

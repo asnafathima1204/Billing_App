@@ -50,16 +50,11 @@
                                         </form>
                                     </div>
                                     <div class="existing-customer-div p-4" id="existing-customer-div" style="display: none;">
-                                       <form action="{% url 'existing_customer' %}" method="post">
-                                        {% csrf_token %}
-                                            <label for="phone">Phone Number:</label>
-                                            <select name="phone" id="phone" class="w-100" style="margin-bottom: 5vh;">
-                                                <option value="" selected disabled>Select Customer</option> <!-- Default Option -->
-                                                {% for customer in customers %}
-                                                <option value="{{ customer.phone }}">+91 {{ customer.phone }}/{{ customer.fullname }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            <button type="submit" class="btn btn-primary w-100">Submit</button>
+                                            <form action="{% url 'search_cutomer' %}" method="get">
+                                                {% csrf_token %}
+                                                <input type="text" name="search">
+                                                <button type="submit">Search</button>
+                                            </form>
                                        </form>
                                     </div>
                                 </div>
@@ -72,8 +67,6 @@
                                 <form action="{% url 'create_invoice' %}" method="post">
                                 {% csrf_token %}
                                     <table class="table table-bordered" id="table">
-                                        
-                                    
                                         <thead>
                                             <tr>
                                                 <th class="text-nowrap"><button type="button"  style="margin: 0px 5px;" class="btn btn-success btn-sm" onclick="addProduct()"><i class="fa-solid fa-plus"></i></button></th>
@@ -90,13 +83,17 @@
                                                     </td>      
                                                     <td class="text-nowrap">
                                                             <div class="mb-3 d-flex">
-                                                                <select name="products[]" id="product" class="w-100 product " onchange="updatePrice(this),setMaxStock(this)">
-                                                                    <option value="" selected disabled>Select Product</option> <!-- Default Option -->
+                                                                <form action="{% url 'search_product' %}" method="get">
+                                                                    {% csrf_token %}
+                                                                    <input type="text" name="search_product" class="form-control">
+                                                                    <button class="btn-product" type="submit">Search</button>
+                                                                </form>
+                                                                <!-- <select name="products[]" id="product" class="w-100 product " onchange="updatePrice(this),setMaxStock(this)">
+                                                                    <option value="" selected disabled>Select Product</option> 
                                                                     {% for product in products %}
                                                                     <option value="{{ product.id }}" data-price="{{ product.price }}" data-stock="{{ product.stock }}"  data-target="#product-details-{{ product.id }}" class="form-control">{{ product.name }}{% if product.description %}/{{ product.description }}{% endif %}</option>                                                                
                                                                     {% endfor %}
-                                                                </select>
-                                                            
+                                                                </select> -->
                                                             </div>
                                                         </td>
                                                         <td class="text-nowrap">

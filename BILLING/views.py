@@ -18,7 +18,7 @@ def invoices(request):
     if request.method == "GET":
         search=request.GET.get("search")
         date=request.GET.get("date")
-        invoices=Invoice.objects.all()
+        invoices=Invoice.objects.all().order_by('-id')
         if search:
             invoices=Invoice.objects.filter(Q(customer__fullname__icontains=search)|Q(id__icontains=search)|Q(grand_total__icontains=search))
            
@@ -27,7 +27,7 @@ def invoices(request):
             invoices=Invoice.objects.filter(date__date=date)
 
         else:
-            invoices=Invoice.objects.all()
+            invoices=Invoice.objects.all().order_by('-id')
     return render(request,"invoices.html",locals())
 
 
@@ -37,9 +37,9 @@ def create_invoice(request):
     phone = request.session.get("phone")
     customers = Customer.objects.all()
     products = Product.objects.filter(stock__gt=0).order_by('name')
-    customer = None
+    # customer = None
     total = 0
-
+    # print(customer)
     # If phone in session, get the customer object
     if phone:
         customer = Customer.objects.filter(phone=phone).first()
@@ -124,11 +124,40 @@ def new_customer(request):
     return redirect('create_invoice')
 
 @login_required
-def existing_customer(request):
-    if request.method == "POST":
-        phone=request.POST.get("phone")
-        request.session['phone'] = phone
-        return redirect('create_invoice')
+def search_cutomer(request):
+    customer=None
+    if request.method == "GET":
+        search = request.GET.get("search")
+        if search:
+            try:
+                customer=Customer.objects.get(phone=search)
+                print(customer)
+                request.session['phone']=search
+                return redirect('create_invoice')
+            except:
+                messages.error(request,"Customer not found with this number")
+                return redirect('create_invoice')
+        else:
+            messages.error(request,"Customer not found with this number")
+            return redirect('create_invoice')
+    return redirect('create_invoice')
+
+@login_required
+def search_product(request):
+    if request.method == "GET":
+        search=request.GET.get("search_product")
+        if search:
+            try:
+                products=Product.objects.filter(name__icontains=search)
+                return redirect('create_invoice')
+            except:
+                messages.error("Invalid product")
+                return redirect('create_invoice')
+        else:
+            messages.error("do you forget to search product")
+            return redirect('create_invoice')
+
+
     return redirect('create_invoice')
 
 @login_required
