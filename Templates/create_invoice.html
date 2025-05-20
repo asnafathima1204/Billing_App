@@ -90,10 +90,10 @@
                                                     </td>      
                                                     <td class="text-nowrap">
                                                             <div class="mb-3 d-flex">
-                                                                <select name="products[]" id="product" class="w-100 product " onchange="updatePrice(this)">
+                                                                <select name="products[]" id="product" class="w-100 product " onchange="updatePrice(this),setMaxStock(this)">
                                                                     <option value="" selected disabled>Select Product</option> <!-- Default Option -->
                                                                     {% for product in products %}
-                                                                    <option value="{{ product.id }}" data-price="{{ product.price }}"  data-target="#product-details-{{ product.id }}" class="form-control">{{ product.name }}/{{ product.description }}/Stock:{{ product.stock }}</option>                                                                
+                                                                    <option value="{{ product.id }}" data-price="{{ product.price }}" data-stock="{{ product.stock }}"  data-target="#product-details-{{ product.id }}" class="form-control">{{ product.name }}{% if product.description %}/{{ product.description }}{% endif %}</option>                                                                
                                                                     {% endfor %}
                                                                 </select>
                                                             
@@ -101,7 +101,7 @@
                                                         </td>
                                                         <td class="text-nowrap">
                                                             <div class="mb-3">
-                                                                <input type="number" name="qty[]" class="qty form-control text-nowrap" value="1" min="1" onchange="updatePrice(this)" required>
+                                                                <input type="number" name="qty[]" class="qty form-control text-nowrap" value="1"  min="1" onchange="updatePrice(this)" required>
                                                             </div>
                                                         </td>
                                                         <td class="text-nowrap">
@@ -139,7 +139,6 @@
 </div>
 {% endblock %}
 {% block script %}
-
 
 <script src="{% static '/JS/invoice.js' %}"></script>
 {% endblock %}

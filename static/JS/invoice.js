@@ -87,4 +87,19 @@ function removeProduct(el){
 
 }
 
+function setMaxStock(selectElement) {
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    const stock = selectedOption.getAttribute('data-stock');
+
+    // Find the same row
+    const row = selectElement.closest('tr');
+    const qtyInput = row.querySelector('.qty'); // Find qty input in this row
+
+    if (stock) {
+        qtyInput.max = stock;
+    } else {
+        qtyInput.removeAttribute('max');
+    }
+}
+
 
