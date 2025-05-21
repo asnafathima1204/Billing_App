@@ -36,66 +36,47 @@ def invoices(request):
 def create_invoice(request):
     phone = request.session.get("phone")
     customers = Customer.objects.all()
-    products = Product.objects.filter(stock__gt=0).order_by('name')
-    # customer = None
-    total = 0
-    # print(customer)
+    cart = request.session.get('cart',[])
+   
     # If phone in session, get the customer object
     if phone:
         customer = Customer.objects.filter(phone=phone).first()
 
-    if request.method == "POST":
-        # On form submit for invoice, check if customer exists
-        if not customer:
-            messages.error(request, "No customer selected. Please select a customer first.")
-            return redirect('create_invoice')
+    search=request.GET.get("search_product")
+    if search:
+            products=Product.objects.filter(Q(name__startswith=search) & Q(stock__gt=0))
+            if not products.exists():
+                messages.error(request, "Requested product not found!")
+            
+    
 
-        # Check if products selected
-        selected_products = request.POST.getlist("products[]")
-        if not selected_products:
-            messages.error(request, "Did you forget to select the product?")
-            return redirect('create_invoice')
+    
 
-        qtys = request.POST.getlist("qty[]")
 
-        invoice = Invoice.objects.create(customer=customer, staff=request.user)
-        
-        for i in range(len(selected_products)):
-            product = Product.objects.get(id=selected_products[i])
-            requested_qty = int(qtys[i])
-
-            # Check if requested quantity exceeds available stock
-            if requested_qty > product.stock:
-                messages.error(request, f"Requested quantity for {product.name} exceeds available stock ({product.stock}).")
-                invoice.delete()  # Delete the partially created invoice
-                return redirect('create_invoice')
-
-            sub_total = product.price * Decimal(requested_qty)
-            invoice_item = InvoiceItem.objects.create(
-                invoice=invoice,
-                product=product,
-                quantity=requested_qty,
-                sub_total=sub_total
-            )
-            product.stock -= requested_qty
-            product.save()
-            total += invoice_item.sub_total
-
-        invoice.total = total
-        tax = total * (Decimal(invoice.gst_percentage / 100))
-        grand_total = total + tax
-        invoice.grand_total = grand_total
-        invoice.save()
-
-        # Clear the session after invoice created
-        del request.session['phone']
-        messages.success(request, "Invoice created successfully")
-        return redirect('invoices')
+    
 
     # GET request: just render the invoice creation page
     return render(request, "create_invoice.html", locals())
 
 
+# @login_required
+# def search_product(request):
+#     # if request.method == "GET":
+#     #     search=request.GET.get("search_product")
+#     #     if search:
+#     #         try:
+#     #             search_products=Product.objects.filter(name__icontains=search)
+#     #             print(search_products)
+#     #             return redirect('create_invoice')
+#     #         except:
+#     #             messages.error(request,"Invalid product")
+#     #             return redirect('create_invoice')
+#     #     else:
+#     #         messages.error(request,"do you forget to search product")
+#     #         return redirect('create_invoice')
+
+
+#     return redirect('create_invoice')
 
 
 @login_required
@@ -142,23 +123,7 @@ def search_cutomer(request):
             return redirect('create_invoice')
     return redirect('create_invoice')
 
-@login_required
-def search_product(request):
-    if request.method == "GET":
-        search=request.GET.get("search_product")
-        if search:
-            try:
-                products=Product.objects.filter(name__icontains=search)
-                return redirect('create_invoice')
-            except:
-                messages.error("Invalid product")
-                return redirect('create_invoice')
-        else:
-            messages.error("do you forget to search product")
-            return redirect('create_invoice')
 
-
-    return redirect('create_invoice')
 
 @login_required
 def view_invoice(request,id):
@@ -194,3 +159,5 @@ def invoice_pdf(request,id):
         'tax':tax
     }
     return render_to_pdf("invoice_pdf.html",context)
+
+
