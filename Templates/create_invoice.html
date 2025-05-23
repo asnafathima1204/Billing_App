@@ -63,20 +63,19 @@
                         <div class="col-lg-6">
                             <div class="product_search p-4">
                                 {% if products %}
-                                <form method="post">
+                                <form method="post" class="d-flex">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="add_product">
-                                    <select name="product_id" id="product" class="w-100 product " onchange="updatePrice(this),setMaxStock(this)">
+                                    <select name="product_id" id="product" class="w-100 product" onchange="updatePrice(this),setMaxStock(this)">
                                     <option value="" selected disabled>Select Product</option> 
                                     {% for product in products %}
                                     <option value="{{ product.id }}" data-price="{{ product.price }}" data-stock="{{ product.stock }}"  data-target="#product-details-{{ product.id }}" class="form-control">{{ product.name }}{% if product.description %}/{{ product.description }}{% endif %}</option>                                                                
                                     {% endfor %}
-                                    <button type="submit">Add Product</button>
-                                </select>
+                                    </select>
+                                    <button type="submit">Add </button>
                                 </form>
                                 {% else %}
                                  <form method="GET" >
-
                                     <div class="d-flex">
                                         <input type="text" name="search_product" class="form-control" value="{{ product_search }}">
                                         <button class="btn btn-product" type="submit">Search</button>
@@ -93,7 +92,7 @@
                                     <table class="table table-bordered" id="table">
                                         <thead>
                                             <tr>
-                                                <th class="text-nowrap"><button type="button"  style="margin: 0px 5px;" class="btn btn-success btn-sm" onclick="addProduct()"><i class="fa-solid fa-plus"></i></button></th>
+                                                <th class="text-nowrap"></th>
                                                 <th class="text-nowrap">Product</th>
                                                 <th class="text-nowrap">Qty</th>
                                                 <th class="text-nowrap">Price</th>
@@ -101,32 +100,46 @@
                                             </tr>
                                         </thead>
                                         <tbody id="product-items">
+                                            {% for i in cart_items %}
                                                 <tr id="product-item" class="product_item">
                                                     <td class="text-nowrap" >
-                                                         <button type="button" style="margin: 0px 5px;" class="btn btn-danger btn-sm" onclick="removeProduct(this)"><i class="fa-solid fa-xmark"></i></button>
+                                                        <form method="post">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="action" value="remove_product">
+                                                            <input type="hidden" name="product_id" value={{i.id}}>
+                                                            <button type="submit" style="margin: 0px 5px;" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i></button>
+                                                        </form>
+                                                         <!-- <button type="button" style="margin: 0px 5px;" class="btn btn-danger btn-sm" onclick="removeProduct(this)"><i class="fa-solid fa-xmark"></i></button> -->
                                                     </td>      
                                                     <td class="text-nowrap">
                                                             <div class="mb-3 d-flex">
-                                                                
+                                                                {{ i.product.name }}
                                                                
                                                             </div>
                                                         </td>
                                                         <td class="text-nowrap">
                                                             <div class="mb-3">
-                                                                <input type="number" name="qty[]" class="qty form-control text-nowrap" value="1"  min="1" onchange="updatePrice(this)" required>
+                                                                <form name="action" method="post" class="qty_form">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="action" value="update_quantity">
+                                                                    <input type="hidden" name="item_id" value="{{ i.id }}">
+                                                                    <input type="number" name="quantity" value="{{ i.quantity }}" min="1" max="{{ i.product.stock }}" required onchange="this.form.submit();">
+                                                                </form>
                                                             </div>
                                                         </td>
                                                         <td class="text-nowrap">
                                                             <div class="mb-3">
-                                                                <input type="number"  name="price" class="price form-control text-nowrap" id="price" value="0.00"  disabled>
-                                                            </div>
+                                                                {{i.product.price}}
+                                                                    </div>
                                                         </td>
                                                         <td class="text-nowrap">
                                                             <div class="mb-3">
-                                                                <input type="number" name="sub_total" class="sub_total form-control " value="0.00" disabled>
+                                                                {{i.sub_total}}
                                                             </div>
                                                         </td>
-                                                </tr>  
+                                                </tr> 
+                                                
+                                                {% endfor %} 
                                         </tbody>
                                     </table>
                                 </div>
@@ -154,6 +167,12 @@
 </div>
 {% endblock %}
 {% block script %}
-
+<script>
+    document.querySelectorAll('.qty_form input[name="quantity"]').forEach(input=>{
+        input.addEventListener('change', () => {
+            input.form.submit();
+        });
+    });
+</script>
 <script src="{% static '/JS/invoice.js' %}"></script>
 {% endblock %}

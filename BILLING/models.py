@@ -22,8 +22,32 @@ class InvoiceItem(models.Model):
     quantity=models.PositiveIntegerField(default=1)
     sub_total=models.IntegerField(default=0)
 
+    @property
+    def sub_total(self):
+        return self.quantity * self.product.price
+
+
+     
+
+class Cart(models.Model):
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
+    total=models.DecimalField(max_digits=10,decimal_places=2,default=0)
+    grand_total=models.DecimalField(max_digits=10,decimal_places=2,default=0)
+
     def __str__(self):
-        return f"Invoice {self.invoice.customer.fullname}"
+        return f"Cart No: {self.id}"
+
+
+
+
+class CartItem(models.Model):
+    cart=models.ForeignKey(Cart,on_delete=models.CASCADE)
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    quantity=models.PositiveBigIntegerField(default=1)
+    sub_total=models.DecimalField(max_digits=10,decimal_places=2,default=0)
+
+    def __str__(self):
+        return f"Cart {self.cart.id}"
 
 
 

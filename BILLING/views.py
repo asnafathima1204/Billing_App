@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from BILLING.models import *
 from django.contrib import messages
 from decimal import Decimal
@@ -36,47 +36,84 @@ def invoices(request):
 def create_invoice(request):
     phone = request.session.get("phone")
     customers = Customer.objects.all()
-    cart = request.session.get('cart',[])
-   
+    cart=None
+    # cart = request.session.get('cart',[])
+    # product_ids = [item['product_id'] for item in cart]
+    # cart_products=Product.objects.filter(id__in=product_ids)
     # If phone in session, get the customer object
     if phone:
-        customer = Customer.objects.filter(phone=phone).first()
-
+        customer = Customer.objects.get(phone=phone)
+        cart=Cart.objects.filter(customer=customer).first()
+        if not cart:
+            cart=Cart.objects.create(customer=customer)
+    
+    
     search=request.GET.get("search_product")
     if search:
-            products=Product.objects.filter(Q(name__startswith=search) & Q(stock__gt=0))
+            products=Product.objects.filter(Q(name__icontains=search) & Q(stock__gt=0))
             if not products.exists():
                 messages.error(request, "Requested product not found!")
             
-    
+    if request.method == "POST":
+        action = request.POST.get("action")
 
-    
+        if action == "add_product":
+            # products=None
+            product_id = request.POST.get("product_id")
+            product=get_object_or_404(Product, id=product_id)
+            if not cart:
+                messages.error(request,"Have you forget to choose a customer")
+                return redirect('create_invoice')
+                
+            
+            cart_item=CartItem.objects.filter(cart=cart,product=product).first()
+            if cart_item:
+                if cart_item.quantity <= product.stock:
+                    cart_item.quantity += 1
+                    cart_item.sub_total = cart_item.product.price * cart_item.quantity
+                    cart_item.save()
+                else:
+                    messages.warning(request, f"Only {product.stock} items available in stock.")
+            else:
+                cart_item=CartItem.objects.create(product=product,cart=cart)
+                cart_item.sub_total = cart_item.product.price * cart_item.quantity
+                cart_item.save()
+            return redirect('create_invoice')
+        
+            
+        elif action == "update_quantity":
+            item_id=int(request.POST.get("item_id"))
+            quantity=request.POST.get("quantity")
+            print("quantity:",quantity)
+            cart_item=CartItem.objects.get(id=item_id)
+            product_stock = cart_item.product.stock
+            if cart_item.quantity <= product_stock:
+                cart_item.quantity = quantity
+                cart_item.sub_total=cart_item.product.price * int(quantity)
+                print(cart_item.sub_total)
+                cart_item.save()
+            else:
+                messages.warning(request, f"Maximum available stock is {product_stock}.")
+                cart_item.quantity = product_stock
+                cart_item.sub_total = cart_item.product.price * product_stock
+                cart_item.save()
+
+            return redirect('create_invoice')
 
 
-    
-
-    # GET request: just render the invoice creation page
+        
+        elif action == "remove_product":
+            item_id = int(request.POST.get("product_id"))
+            print(item_id)
+            cart_item=CartItem.objects.get(id=item_id)
+            cart_item.delete()
+            return redirect('create_invoice')  
+        
+    cart_items=CartItem.objects.filter(cart=cart)
+    print(cart_items)
     return render(request, "create_invoice.html", locals())
 
 
-# @login_required
-# def search_product(request):
-#     # if request.method == "GET":
-#     #     search=request.GET.get("search_product")
-#     #     if search:
-#     #         try:
-#     #             search_products=Product.objects.filter(name__icontains=search)
-#     #             print(search_products)
-#     #             return redirect('create_invoice')
-#     #         except:
-#     #             messages.error(request,"Invalid product")
-#     #             return redirect('create_invoice')
-#     #     else:
-#     #         messages.error(request,"do you forget to search product")
-#     #         return redirect('create_invoice')
-
-
-#     return redirect('create_invoice')
 
 
 @login_required

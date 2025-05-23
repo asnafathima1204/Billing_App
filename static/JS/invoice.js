@@ -103,3 +103,6 @@ function setMaxStock(selectElement) {
 }
 
 
+
+
+
