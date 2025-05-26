@@ -152,9 +152,11 @@
                     <input type="hidden" name="action" value="save_invoice">
                         <div class="total-invoice-details">
                                 <div class="right-div">
-                                    <p><strong>Total :</strong><input type="number" id="total" name="total" disabled></p>
-                                    <p><strong>Tax(5%) :</strong><input type="number" id="tax" name="tax" disabled></p>
-                                    <p><strong>Grand Total :</strong><input type="number" id="grand_total" name="grand_total" disabled></p>
+                                    {% if cart %}
+                                    <p><strong>Total :</strong><input type="number" id="total" name="total" value="{{ cart.total }}" disabled></p>
+                                    <p><strong>Tax({{ cart.gst_percentage }}%) :</strong><input type="number" id="tax" name="tax" value="{{ cart.gst }}" disabled></p>
+                                    <p><strong>Grand Total :</strong><input type="number" id="grand_total" name="grand_total" value="{{ cart.grand_total}}" disabled></p>
+                                    {% endif %}
                                 </div>
                         </div>
                         <div class="submit-btn">
