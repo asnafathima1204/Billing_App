@@ -37,6 +37,7 @@ def create_invoice(request):
     phone = request.session.get("phone")
     customers = Customer.objects.all()
     cart=None
+    cart_item=None
     # cart = request.session.get('cart',[])
     # product_ids = [item['product_id'] for item in cart]
     # cart_products=Product.objects.filter(id__in=product_ids)
@@ -82,6 +83,7 @@ def create_invoice(request):
                     cart.gst = gst
                     cart.grand_total = cart.total + cart.gst
                     cart.save()
+                    return redirect('create_invoice')
                 else:
                     cart.total -= cart_item.sub_total
 
@@ -117,7 +119,7 @@ def create_invoice(request):
             print("quantity:",quantity)
             cart_item=CartItem.objects.get(id=item_id)
             product_stock = int(cart_item.product.stock)
-            if quantity <= product_stock & quantity >= 1:
+            if quantity <= product_stock and quantity >= 1:
                 cart.total -= cart_item.sub_total
 
                 cart_item.quantity = quantity
@@ -130,6 +132,7 @@ def create_invoice(request):
                 cart.gst = gst
                 cart.grand_total = cart.total + cart.gst
                 cart.save()
+                return redirect('create_invoice')
             else:
                 if quantity > product_stock:
                     messages.warning(request, f"Maximum available stock of {cart_item.product} is {product_stock}.")
@@ -144,6 +147,7 @@ def create_invoice(request):
                     cart.gst = gst
                     cart.grand_total = cart.total + cart.gst
                     cart.save()
+                    return redirect('create_invoice')
                 elif quantity < 1:
                     messages.warning(request,f"Quantity for { cart_item.product } was less than 1. It has been reset to 1 automatically.")
                     cart.total -= cart_item.sub_total
@@ -178,6 +182,41 @@ def create_invoice(request):
 
             return redirect('create_invoice')  
         
+        elif action == "save_invoice":
+            if not phone:
+                messages.error(request,"Did you forget to add a customer")
+                return redirect('create_invoice')
+            if not cart or not cart.cartitem_set.exists():
+                messages.error(request,"Cart is empty, Add products before saving.")
+                return redirect('create_invoice')
+            
+            invoice=Invoice.objects.create(
+                customer = cart.customer,
+                staff = request.user,
+                date=datetime.now(),
+                total = cart.total,
+                grand_total = cart.grand_total,
+                gst=cart.gst
+
+            )
+
+            for item in CartItem.objects.filter(cart=cart):
+                invoice_item=InvoiceItem.objects.create(
+                    invoice=invoice,
+                    product=item.product,
+                    quantity=item.quantity,
+                    sub_total=item.sub_total
+                )
+
+                item.product.stock -= item.quantity
+                item.product.save()
+            
+            CartItem.objects.filter(cart=cart).delete()
+            cart.delete()
+
+            messages.success(request,"Invoice created successfully!")
+            return redirect('invoices')
+            
     cart_items=CartItem.objects.filter(cart=cart)
     print(cart_items)
     return render(request, "create_invoice.html", locals())
@@ -236,7 +275,6 @@ def view_invoice(request,id):
     invoice=Invoice.objects.get(id=id)
     invoiceItem=InvoiceItem.objects.filter(invoice=invoice)
 
-    tax = invoice.total * Decimal(invoice.gst_percentage/100)
     return render(request,"view_invoice.html",locals())
 
 
@@ -254,15 +292,12 @@ def render_to_pdf(html_page,context):
 def invoice_pdf(request,id):
     invoice=Invoice.objects.get(id=id)
     invoice_item = InvoiceItem.objects.filter(invoice=invoice)
-    gst = Decimal(invoice.gst_percentage/100)
-    tax = invoice.total * gst
 
 
     context={
         'request': request,
         'invoice':invoice,
-        'invoice_item':invoice_item,
-        'tax':tax
+        'invoice_item':invoice_item
     }
     return render_to_pdf("invoice_pdf.html",context)
 

@@ -207,13 +207,13 @@ hr{
                           </tr>
                           <tr >
                             <th colspan="3" style="border: 2px solid #fff;"></th>
-                            <td class="footer-text" >Tax(5%):</td>
-                            <td   style="text-align: right;">{{ tax|floatformat:2 }}</td>
+                            <td class="footer-text" >Tax({{ invoice.gst_percentage }}%):</td>
+                            <td   style="text-align: right;">{{ invoice.gst }}</td>
                           </tr>
                           <tr class="footer-last-tr" >
                             <th colspan="3" style="border: 2px solid #fff;"></th>
                             <td class="footer-text"><strong>Grand Total:</strong></td>
-                            <td   style="text-align: right;"><strong>{{ invoice.grand_total|floatformat:2 }}</strong></td>
+                            <td   style="text-align: right;"><strong>{{ invoice.grand_total }}</strong></td>
                           </tr>
                          
                     </tfoot>

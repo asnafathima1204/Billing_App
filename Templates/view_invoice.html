@@ -77,8 +77,8 @@
                           </tr>
                           <tr>
                             <th colspan="3" style="border: none;"></th>
-                            <td class="footer-text">Tax(5%):</td>
-                            <td   style="text-align: right;">{{ tax|floatformat:2 }}</td>
+                            <td class="footer-text">Tax({{ invoice.gst_percentage }}%):</td>
+                            <td   style="text-align: right;">{{ invoice.gst }}</td>
                           </tr>
                           <tr class="footer-last-tr" >
                             <th colspan="3" style="border: none;"></th>

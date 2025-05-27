@@ -9,6 +9,7 @@ class Invoice(models.Model):
     staff=models.ForeignKey(User,on_delete=models.CASCADE)
     date=models.DateTimeField(auto_now_add=True)
     gst_percentage=models.IntegerField(default=2)
+    gst=models.DecimalField(max_digits=5,decimal_places=2,default=0.00)
     total = models.DecimalField(max_digits=15,decimal_places=2,default=0)
     grand_total=models.DecimalField(max_digits=15,default=0,decimal_places=2)
 
@@ -20,11 +21,10 @@ class InvoiceItem(models.Model):
     invoice=models.ForeignKey(Invoice,on_delete=models.CASCADE)
     product=models.ForeignKey(Product,on_delete=models.CASCADE)
     quantity=models.PositiveIntegerField(default=1)
-    sub_total=models.IntegerField(default=0)
+    sub_total = models.DecimalField(max_digits=10,decimal_places=2,default=0.00)
 
-    @property
-    def sub_total(self):
-        return self.quantity * self.product.price
+    def __str__(self):
+        return f"Invoice: {self.invoice}"
 
 
      
