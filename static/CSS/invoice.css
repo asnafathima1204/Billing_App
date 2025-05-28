@@ -78,6 +78,13 @@
     .list-group {
         padding-left:0px;
     }
+    .total-invoice-details .left-div{
+        text-align: right;
+        float: right;
+    }
+    .total-invoice-details .left-div div{
+        display: block;
+    }
 }
 
 
@@ -103,6 +110,12 @@
     text-align: right;
     float: right;
 }
+
+.total-invoice-details .left-div label{
+    text-align: end;
+}
+
+
 
 .new-customer-div input,
 .new-customer-div textarea{

@@ -87,43 +87,45 @@
                     </div>
                         <div class="row p-2">
                             <div class="product-details">
-                                <div class="table-responsive scroll-table">
-                                
-                                    <table class="table table-bordered" id="table">
+                               <div class="scroll-table" style="overflow-x: auto;">
+                                    <table class="table table-bordered" id="table" style="min-width: 600px;">
                                         <thead>
                                             <tr>
-                                                <th class="text-nowrap"></th>
+                                                <th class="text-nowrap" style="width: 10%;" ></th>
                                                 <th class="text-nowrap">Product</th>
                                                 <th class="text-nowrap">Qty</th>
                                                 <th class="text-nowrap">Price</th>
-                                                <th class="text-nowrap">Sub Total</th>
+                                                <th class="text-nowrap" >Sub Total</th>
                                             </tr>
                                         </thead>
                                         <tbody id="product-items">
                                             {% for i in cart_items %}
-                                                <tr id="product-item" class="product_item">
-                                                    <td class="text-nowrap" >
-                                                        <form method="post">
-                                                            {% csrf_token %}
-                                                            <input type="hidden" name="action" value="remove_product">
-                                                            <input type="hidden" name="product_id" value={{i.id}}>
-                                                            <button type="submit" style="margin: 0px 5px;" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i></button>
-                                                        </form>
-                                                         <!-- <button type="button" style="margin: 0px 5px;" class="btn btn-danger btn-sm" onclick="removeProduct(this)"><i class="fa-solid fa-xmark"></i></button> -->
-                                                    </td>      
-                                                    <td class="text-nowrap">
-                                                            <div class="mb-3 d-flex">
-                                                                {{ i.product.name }}
-                                                               
-                                                            </div>
-                                                        </td>
+                                                <tr id="product-item" class="product_item w-100">
+                                                        <td class="text-nowrap" style="width: 10%;" >
+                                                            <form method="post">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="action" value="remove_product">
+                                                                <input type="hidden" name="product_id" value={{i.id}}>
+                                                                <button type="submit" style="margin: 0px 5px;" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i></button>
+                                                            </form>
+                                                            <!-- <button type="button" style="margin: 0px 5px;" class="btn btn-danger btn-sm" onclick="removeProduct(this)"><i class="fa-solid fa-xmark"></i></button> -->
+                                                        </td>   
+                                                        <td style="white-space: normal; word-break: break-word;">
+                                                            {{ i.product.name }}
+                                                            <!-- <div class="mb-3 d-flex flex-wrap">
+
+                                                                <span class="w-100 w-md-auto">
+                                                                    {{ i.product.name }}
+                                                                </span>
+                                                            </div> -->
+                                                        </td>  
                                                         <td class="text-nowrap">
                                                             <div class="mb-3">
-                                                                <form name="action" method="post" class="qty_form">
+                                                                <form  method="post" class="qty_form">
                                                                     {% csrf_token %}
                                                                     <input type="hidden" name="action" value="update_quantity">
                                                                     <input type="hidden" name="item_id" value="{{ i.id }}">
-                                                                    <input type="number" name="quantity" value="{{ i.quantity }}" min="1" max="{{ i.product.stock }}" required onchange="this.form.submit();">
+                                                                    <input type="number" name="quantity" value="{{ i.quantity }}" class="form-control" min="1" max="{{ i.product.stock }}" required onchange="this.form.submit();">
                                                                 </form>
                                                             </div>
                                                         </td>
@@ -146,23 +148,59 @@
                             
                             </div>
                         </div>
-                    
-                    <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="save_invoice">
-                        <div class="total-invoice-details">
-                                <div class="right-div">
-                                    {% if cart %}
-                                    <p><strong>Total :</strong><input type="number" id="total" name="total" value="{{ cart.total }}" disabled></p>
-                                    <p><strong>Tax({{ cart.gst_percentage }}%) :</strong><input type="number" id="tax" name="tax" value="{{ cart.gst }}" disabled></p>
-                                    <p><strong>Grand Total :</strong><input type="number" id="grand_total" name="grand_total" value="{{ cart.grand_total}}" disabled></p>
-                                    {% endif %}
+                        <div class="amount-div">
+                            <div class="row">
+                                <div class="col-lg-6 order-2 order-md-1">
+                                    <div class="total-invoice-details w-100">
+                                        <div class="left-div">
+                                            {% if cart %}
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="payment">
+                                                <p><strong>Amount Paid :</strong><input type="number" id="amount_paid" name="amount_paid" value="" required></p>
+                                            </form>
+                                            <p><strong>Amount Due :</strong><input type="number" id="amount_due" name="amount_due" value="" disabled></p>
+                                            <p><strong>Wallet :</strong><input type="number" id="wallet" name="wallet" value="" disabled></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </div>
+                                <div class="col-lg-6 order-1 order-md-2">
+                                     <div class="total-invoice-details w-100">
+                                        <div class="right-div">
+                                            {% if cart %}
+                                            <p><strong>Total :</strong><input type="number" id="total" name="total" value="{{ cart.total }}" disabled></p>
+                                            <p><strong>Tax({{ cart.gst_percentage }}%) :</strong><input type="number" id="tax" name="tax" value="{{ cart.gst }}" disabled></p>
+                                            <p><strong>Grand Total :</strong><input type="number" id="grand_total" name="grand_total" value="{{ cart.grand_total}}" disabled></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                            </div>
                         </div>
-                        <div class="submit-btn">
-                            <button type="submit" class="btn-product btn w-100">Save Invoice</button>
+                        <div class="button-div">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <form method="post">
+                                    {% csrf_token %}
+                                        <input type="hidden" name="action" value="clear_invoice">
+                                        <div class="submit-btn">
+                                            <button type="submit" class="btn-product  w-100">Clear</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-lg-6">
+                                    <form method="post">
+                                    {% csrf_token %}
+                                        <input type="hidden" name="action" value="save_invoice">
+                                        <div class="submit-btn">
+                                            <button type="submit" class="btn-product  w-100">Save Invoice</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                    </form>
             </div>
         </div>
     </div>

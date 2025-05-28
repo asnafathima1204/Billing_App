@@ -216,7 +216,16 @@ def create_invoice(request):
 
             messages.success(request,"Invoice created successfully!")
             return redirect('invoices')
-            
+        
+        elif action == "clear_invoice":
+            if cart:
+                cart.delete()
+                request.session.pop('phone', None)
+                messages.success(request,"Invoice cleared successfully")
+                return redirect('create_invoice')
+            else:
+                messages.error(request,"No invoice to clear")
+                return redirect('create_invoice')
     cart_items=CartItem.objects.filter(cart=cart)
     print(cart_items)
     return render(request, "create_invoice.html", locals())
