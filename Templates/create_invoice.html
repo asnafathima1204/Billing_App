@@ -145,7 +145,6 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            
                             </div>
                         </div>
                         <div class="amount-div">
@@ -157,11 +156,14 @@
                                             <form method="post">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="action" value="payment">
-                                                <p><strong>Amount Paid :</strong><input type="number" id="amount_paid" name="amount_paid" value="" required></p>
+                                                <p><strong>Amount Paid :</strong><input type="number" id="amount_paid" name="amount_paid" value="{{ cart.amount_paid }}" required>
+                                                <button type="submit">Pay</button></p>
                                             </form>
-                                            <p><strong>Amount Due :</strong><input type="number" id="amount_due" name="amount_due" value="" disabled></p>
-                                            <p><strong>Wallet :</strong><input type="number" id="wallet" name="wallet" value="" disabled></p>
+                                            <p><strong>Amount Due :</strong><input type="number" id="amount_due" name="amount_due" value="{{due_amount}}" disabled></p>
+                                            <p><strong>Balence :</strong><input type="number" id="balence" name="balence" value="{{balance}}" disabled></p>
+                                            <p><strong>Wallet :</strong><input type="number" id="wallet" name="wallet" value="{{ customer.wallet }}" disabled></p>
                                             {% endif %}
+                                            
                                         </div>
                                     </div>
                                 </div>

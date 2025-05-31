@@ -12,6 +12,8 @@ class Invoice(models.Model):
     gst=models.DecimalField(max_digits=5,decimal_places=2,default=0.00)
     total = models.DecimalField(max_digits=15,decimal_places=2,default=0)
     grand_total=models.DecimalField(max_digits=15,default=0,decimal_places=2)
+    amount_paid=models.DecimalField(max_digits=10,decimal_places=2,default=0.00)
+    amount_due=models.DecimalField(max_digits=10,decimal_places=2,default=0.00)
 
     def __str__(self):
         return f"Invoice {self.id}"
@@ -35,6 +37,9 @@ class Cart(models.Model):
     gst_percentage=models.IntegerField(default=2)
     gst=models.DecimalField(max_digits=5,decimal_places=2,default=0.00)
     grand_total=models.DecimalField(max_digits=10,decimal_places=2,default=0.00)
+    amount_paid=models.DecimalField(max_digits=10,decimal_places=2,default=0.00)
+    amount_due=models.DecimalField(max_digits=10,decimal_places=2,default=0.00)
+
 
     def __str__(self):
         return f"Cart No: {self.id}"

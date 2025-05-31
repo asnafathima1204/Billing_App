@@ -38,6 +38,9 @@ def create_invoice(request):
     customers = Customer.objects.all()
     cart=None
     cart_item=None
+    balance = 0
+    due_amount= 0
+
     # cart = request.session.get('cart',[])
     # product_ids = [item['product_id'] for item in cart]
     # cart_products=Product.objects.filter(id__in=product_ids)
@@ -47,6 +50,12 @@ def create_invoice(request):
         cart=Cart.objects.filter(customer=customer).first()
         if not cart:
             cart=Cart.objects.create(customer=customer)
+    if cart:
+        due = cart.amount_due
+        if due<0:
+            due_amount=abs(due)
+        elif due >= 0:
+            balance=abs(due)
     
     
     search=request.GET.get("search_product")
@@ -182,12 +191,45 @@ def create_invoice(request):
 
             return redirect('create_invoice')  
         
+           
+
+        elif action == "payment":
+            amount_paid = Decimal(request.POST.get("amount_paid"))
+
+            if cart:
+                cart_items = cart.cartitem_set.all()
+                if cart_items:
+                    grand_total = cart.grand_total
+                    customer = cart.customer
+                    wallet=customer.wallet
+                    amount_due = amount_paid-grand_total
+
+                    #if amount_due > 0 = amount_due, which will include in wallet as negative 
+                    #else balence, which will include in wallet as positive
+                    
+                    cart.amount_paid = amount_paid
+                    cart.amount_due = amount_due
+                    cart.save()
+
+
+                    messages.success(request,f"Payment recorded.Amount Paid: ₹{amount_paid},  Amount due: ₹{-amount_due}, Wallet remaining: ₹{customer.wallet}")
+                    return redirect('create_invoice')
+                else:
+                    messages.error(request,"Did you forget to add a product?")
+                    return redirect('create_invoice')
+            else:
+                messages.error(request,"No cart available")
+                return redirect('create_invoice')
+        
         elif action == "save_invoice":
             if not phone:
                 messages.error(request,"Did you forget to add a customer")
                 return redirect('create_invoice')
             if not cart or not cart.cartitem_set.exists():
                 messages.error(request,"Cart is empty, Add products before saving.")
+                return redirect('create_invoice')
+            if not cart.amount_paid:
+                messages.error(request,"Did you forget to pay?")
                 return redirect('create_invoice')
             
             invoice=Invoice.objects.create(
@@ -196,9 +238,13 @@ def create_invoice(request):
                 date=datetime.now(),
                 total = cart.total,
                 grand_total = cart.grand_total,
-                gst=cart.gst
+                gst=cart.gst,
+                amount_paid=cart.amount_paid,
+                amount_due=cart.amount_due,
 
             )
+            customer.wallet=customer.wallet+invoice.amount_due
+            customer.save()
 
             for item in CartItem.objects.filter(cart=cart):
                 invoice_item=InvoiceItem.objects.create(
@@ -226,6 +272,12 @@ def create_invoice(request):
             else:
                 messages.error(request,"No invoice to clear")
                 return redirect('create_invoice')
+         
+        
+
+
+            
+
     cart_items=CartItem.objects.filter(cart=cart)
     print(cart_items)
     return render(request, "create_invoice.html", locals())
@@ -283,6 +335,14 @@ def search_cutomer(request):
 def view_invoice(request,id):
     invoice=Invoice.objects.get(id=id)
     invoiceItem=InvoiceItem.objects.filter(invoice=invoice)
+    due_amount=0
+    balence=0
+
+    due = invoice.amount_due
+    if due < 0:
+        due_amount = abs(due)
+    elif due > 0:
+        balence = abs(due)
 
     return render(request,"view_invoice.html",locals())
 
@@ -301,12 +361,23 @@ def render_to_pdf(html_page,context):
 def invoice_pdf(request,id):
     invoice=Invoice.objects.get(id=id)
     invoice_item = InvoiceItem.objects.filter(invoice=invoice)
+    due_amount=0
+    balence=0
+
+    due = invoice.amount_due
+    if due < 0:
+        due_amount = abs(due)
+    elif due > 0:
+        balence = abs(due)
 
 
     context={
         'request': request,
         'invoice':invoice,
-        'invoice_item':invoice_item
+        'invoice_item':invoice_item,
+        'due_amount':due_amount,
+        'balence':balence,
+        'due':due
     }
     return render_to_pdf("invoice_pdf.html",context)
 

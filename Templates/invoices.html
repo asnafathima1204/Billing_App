@@ -41,6 +41,7 @@
                     <th scope="col">Date</th>
                     <th scope="col">Total</th>
                     <th scope="col"></th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody class="table-group-divider">
@@ -52,6 +53,7 @@
                         <td class="text-nowrap">{{ invoice.date }}</td>
                         <td class="text-nowrap">{{ invoice.grand_total }}</td>
                         <td class="text-nowrap"><a href="{% url 'view_invoice' invoice.id %}" class="btn btn-product">View Invoice</a></td>
+                        <td class="text-nowrap"><a href="" class="btn btn-product">Edit</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>

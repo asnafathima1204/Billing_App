@@ -53,9 +53,9 @@
                         <tr>
                           <th scope="col" style="width: 2%;">#</th>
                           <th scope="col" style="width: 50%;">Item Description</th>
-                          <th scope="col"  style="text-align: right;">Quantity</th>
-                          <th scope="col"   style="text-align: right;">Unit Price</th>
-                          <th scope="col"   style="text-align: right;">Sub total</th>
+                          <th scope="col" style="text-align: right;">Quantity</th>
+                          <th scope="col" style="text-align: right;">Unit Price</th>
+                          <th scope="col" style="text-align: right;">Sub total</th>
                         </tr>
                       </thead>
                       <tbody  class="table-body">
@@ -63,9 +63,9 @@
                         <tr>
                           <th scope="row">{{ forloop.counter }}</th>
                           <td>{{ item.product.name }}/{{ item.product.description}}</td>
-                          <td   style="text-align: right;">{{ item.quantity }}</td>
-                          <td  style="text-align: right;">{{ item.product.price }}</td>
-                          <td   style="text-align: right;">{{ item.sub_total|floatformat:2 }}</td>
+                          <td style="text-align: right;">{{ item.quantity }}</td>
+                          <td style="text-align: right;">{{ item.product.price }}</td>
+                          <td style="text-align: right;">{{ item.sub_total|floatformat:2 }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -73,29 +73,37 @@
                           <tr>
                             <th colspan="3" style="border: none;"></th>
                             <td class="footer-text">Total:</td>
-                            <td   style="text-align: right;">{{ invoice.total }}</td>
+                            <td style="text-align: right;">{{ invoice.total }}</td>
                           </tr>
                           <tr>
                             <th colspan="3" style="border: none;"></th>
                             <td class="footer-text">Tax({{ invoice.gst_percentage }}%):</td>
-                            <td   style="text-align: right;">{{ invoice.gst }}</td>
+                            <td style="text-align: right;">{{ invoice.gst }}</td>
                           </tr>
                           <tr class="footer-last-tr" >
                             <th colspan="3" style="border: none;"></th>
                             <td class="footer-text"><strong>Grand Total:</strong></td>
-                            <td   style="text-align: right;"><strong>{{ invoice.grand_total|floatformat:2 }}</strong></td>
+                            <td style="text-align: right;"><strong>{{ invoice.grand_total|floatformat:2 }}</strong></td>
                           </tr>
-                         
+                          <tr>
+                            <th colspan="3" style="border: none;"></th>
+                            <td class="footer-text">Amount Paid:</td>
+                            <td style="text-align: right;">{{ invoice.amount_paid }}</td>
+                          </tr>
+                          <tr>
+                            <th colspan="3" style="border: none;"></th>
+                            <td class="footer-text">Amount Due:</td>
+                            <td style="text-align: right;">{{ due_amount|floatformat:2 }}</td>
+                          </tr>
+                          <tr>
+                            <th colspan="3" style="border: none;"></th>
+                            <td class="footer-text">Balence :</td>
+                            <td style="text-align: right;">{{ balence|floatformat:2 }}</td>
+                          </tr>
                     </tfoot>
-                        
-                    
-                    </table>
-                    
+                  </table>
               </div>
-              
         </div>
-        
-    
         <div class="msg p-4">
             <div>
                 <p>Thanks for your shopping!!</p>

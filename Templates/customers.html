@@ -18,6 +18,7 @@
                     <th scope="col">Fullname</th>
                     <th scope="col">Phone</th>
                     <th scope="col">Address</th>
+                    <th scope="col">Wallet</th>
                 </tr>
                 </thead>
                 <tbody class="table-group-divider">
@@ -27,6 +28,7 @@
                         <td class="text-nowrap">{{ customer.fullname }}</td>
                         <td class="text-nowrap">+91 {{ customer.phone }}</td>
                         <td class="text-nowrap">{{ customer.address }}</td>
+                        <td class="text-nowrap">{{ customer.wallet }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

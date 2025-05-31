@@ -78,10 +78,13 @@ def dashboard(request):
     customers=Customer.objects.all().count()
     products=Product.objects.all().count()
     staffs=User.objects.filter(is_staff=True,is_superuser=False).count()
+    
 
     today = timezone.now().date()
     recent_invoice=Invoice.objects.filter(date__date=today)
     total_invoice_amount=Invoice.objects.all().aggregate(total_sum=(Sum('grand_total')))['total_sum'] or 0.00
+    total_amount_paid=Invoice.objects.all().aggregate(total_sum=(Sum('amount_paid')))['total_sum'] or 0.00
+    total_amount_due=abs(Invoice.objects.all().aggregate(total_sum=(Sum('amount_due')))['total_sum']) or 0.00
     stocks = Product.objects.filter(stock__gt=0).count()
     return render(request,'dashboard.html',locals())
 
