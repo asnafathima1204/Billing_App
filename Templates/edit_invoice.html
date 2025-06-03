@@ -1,0 +1,39 @@
+{% extends 'extends.html' %}
+{% load static %}
+{% block title %}Edit Invoice{% endblock %}
+{% block link %}
+<link rel="stylesheet" href="{% static '/CSS/product.css' %}">
+{% endblock %}
+{% block content %}
+<div class="col-lg-10 col-md-9 col-sm-9 page-col">
+    <div class="heading">
+        <h2>Edit Invoice #INV{{ invoice.id }}</h2><br>
+        <h4><<a href="{% url 'invoices' %}" style="color: #000;">Back</a></h4>
+    </div>
+    <div class="bg-white p-4">
+        <p><strong>Customer:</strong><input type="text" name="" id="" value=" {{ invoice.customer.fullname }}" disabled></p>
+        <!-- <p><strong>Grand Total:</strong><input type="text" name="" id="" value=" {{ invoice.grand_total }}" disabled></p> -->
+        <!-- <p><strong>Previous Amount Paid:</strong><input type="text" name="" id="" value=" {{ invoice.amount_paid }}" disabled></p> -->
+        <p><strong>Previous Due Amount:</strong><input type="text" name="" id="" value="{{ old_due }}" disabled></p>
+        
+    </div>
+    <div class="p-4 bg-white edit_content">
+        <div class="update-payment">
+            <p class="form">
+                <form method="post">
+                    {% csrf_token %}
+                    <label for="payment"><strong>Add Payment:</strong></label>
+                    <input type="number" name="payment" min="0" class="w-25" value="{{ payment }}" required>
+                    <button type="submit">Pay</button>
+                </form>
+            </p>
+        </div>
+        
+        {% if payment %}
+        <p><strong>Due Amount:</strong><input type="text" name="" id="" value="{{ new_due }}" disabled></p>
+        <p><strong>Balence</strong><input type="text" name="" id="" value="{{ balance }}" disabled></p>
+        {% endif %}
+    </div>
+    
+</div>
+{% endblock %}

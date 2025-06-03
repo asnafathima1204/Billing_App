@@ -40,11 +40,7 @@ def create_invoice(request):
     cart_item=None
     balance = 0
     due_amount= 0
-
-    # cart = request.session.get('cart',[])
-    # product_ids = [item['product_id'] for item in cart]
-    # cart_products=Product.objects.filter(id__in=product_ids)
-    # If phone in session, get the customer object
+    
     if phone:
         customer = Customer.objects.get(phone=phone)
         cart=Cart.objects.filter(customer=customer).first()
@@ -212,7 +208,7 @@ def create_invoice(request):
                     cart.save()
 
 
-                    messages.success(request,f"Payment recorded.Amount Paid: ₹{amount_paid},  Amount due: ₹{-amount_due}, Wallet remaining: ₹{customer.wallet}")
+                    messages.success(request,f"Payment recorded.Amount Paid: ₹{amount_paid},  Amount due: ₹{amount_due}, Wallet remaining: ₹{customer.wallet}")
                     return redirect('create_invoice')
                 else:
                     messages.error(request,"Did you forget to add a product?")
@@ -228,9 +224,9 @@ def create_invoice(request):
             if not cart or not cart.cartitem_set.exists():
                 messages.error(request,"Cart is empty, Add products before saving.")
                 return redirect('create_invoice')
-            if not cart.amount_paid:
-                messages.error(request,"Did you forget to pay?")
-                return redirect('create_invoice')
+            # if not cart.amount_paid:
+            #     messages.error(request,"Did you forget to pay?")
+            #     return redirect('create_invoice')
             
             invoice=Invoice.objects.create(
                 customer = cart.customer,
@@ -240,10 +236,36 @@ def create_invoice(request):
                 grand_total = cart.grand_total,
                 gst=cart.gst,
                 amount_paid=cart.amount_paid,
-                amount_due=cart.amount_due,
-
+                # amount_due=cart.amount_due
             )
-            customer.wallet=customer.wallet+invoice.amount_due
+
+            invoice.amount_due = invoice.amount_paid - invoice.grand_total
+
+            if invoice.amount_due > 0:
+                customer.wallet += invoice.amount_due
+                invoice.amount_due = 0
+                messages.success(request,f"₹{invoice.amount_due} added to wallet.")
+
+            elif invoice.amount_due <= 0:
+                if customer.wallet > 0:
+                    if customer.wallet >= abs(invoice.amount_due): 
+                        # wallet can fully pay the due
+                        customer.wallet -= abs(invoice.amount_due)
+                        invoice.amount_due = 0
+                    else:  
+                        # wallet is not enough to fully pay the due
+                        invoice.amount_due += customer.wallet
+                        customer.wallet = 0
+                        customer.wallet += invoice.amount_due
+                        invoice.amount_due = 0
+
+                else:
+                    customer.wallet += invoice.amount_due
+                    invoice.amount_due = 0
+        
+
+
+            invoice.save()
             customer.save()
 
             for item in CartItem.objects.filter(cart=cart):
@@ -273,10 +295,6 @@ def create_invoice(request):
                 messages.error(request,"No invoice to clear")
                 return redirect('create_invoice')
          
-        
-
-
-            
 
     cart_items=CartItem.objects.filter(cart=cart)
     print(cart_items)
@@ -335,14 +353,23 @@ def search_cutomer(request):
 def view_invoice(request,id):
     invoice=Invoice.objects.get(id=id)
     invoiceItem=InvoiceItem.objects.filter(invoice=invoice)
-    due_amount=0
-    balence=0
+    # due_amount=0
+    # balance=0
 
-    due = invoice.amount_due
-    if due < 0:
-        due_amount = abs(due)
-    elif due > 0:
-        balence = abs(due)
+    # due = invoice.amount_due 
+
+    # if due < 0:
+    #     due_amount = abs(due)
+    # elif due > 0:
+    #     balance = abs(due)
+    wallet = invoice.customer.wallet
+    total_balance = 0
+    total_due = 0
+
+    if wallet < 0:
+        total_due = abs(wallet)
+    elif wallet > 0:
+        total_balance = wallet
 
     return render(request,"view_invoice.html",locals())
 
@@ -361,24 +388,66 @@ def render_to_pdf(html_page,context):
 def invoice_pdf(request,id):
     invoice=Invoice.objects.get(id=id)
     invoice_item = InvoiceItem.objects.filter(invoice=invoice)
-    due_amount=0
-    balence=0
+    wallet = invoice.customer.wallet
+    total_balance = 0
+    total_due = 0
 
-    due = invoice.amount_due
-    if due < 0:
-        due_amount = abs(due)
-    elif due > 0:
-        balence = abs(due)
+    if wallet < 0:
+        total_due = abs(wallet)
+    elif wallet > 0:
+        total_balance = wallet
 
 
     context={
         'request': request,
         'invoice':invoice,
         'invoice_item':invoice_item,
-        'due_amount':due_amount,
-        'balence':balence,
-        'due':due
+        'total_due':total_due,
+        'total_balance':total_balance,
+        'wallet':wallet
     }
     return render_to_pdf("invoice_pdf.html",context)
+
+def edit_invoice(request,id):
+    invoice=Invoice.objects.get(id=id)
+    customer = Customer.objects.get(invoice=invoice)
+    wallet = customer.wallet
+    balance = 0
+    old_due = 0
+    new_due = 0
+
+    
+
+    if wallet < 0:
+        old_due = abs(wallet)
+
+    if request.method == "POST":
+        payment = request.POST.get("payment")
+        print(payment)
+        wallet = customer.wallet
+
+
+        wallet += Decimal(payment)
+        customer.wallet = wallet
+        print("wallet",customer.wallet)
+
+        if wallet > 0:
+            balance = wallet
+        elif wallet < 0:
+            new_due = wallet
+            new_due = abs(new_due)
+
+        customer.save()
+        invoice.save()
+        return render(request,'edit_invoice.html',locals())
+
+
+
+       
+    
+   
+
+
+    return render(request,"edit_invoice.html",locals())
 
 

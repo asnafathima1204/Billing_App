@@ -90,15 +90,20 @@
                             <td class="footer-text">Amount Paid:</td>
                             <td style="text-align: right;">{{ invoice.amount_paid }}</td>
                           </tr>
+                          <!-- <tr>
+                            <th colspan="3" style="border: none;"></th>
+                            <td class="footer-text">Wallet:</td>
+                            <td style="text-align: right;">{{ invoice.customer.wallet|floatformat:2 }}</td>
+                          </tr> -->
                           <tr>
                             <th colspan="3" style="border: none;"></th>
-                            <td class="footer-text">Amount Due:</td>
-                            <td style="text-align: right;">{{ due_amount|floatformat:2 }}</td>
+                            <td class="footer-text">Total Due:</td>
+                            <td style="text-align: right;">{{ total_due|floatformat:2 }}</td>
                           </tr>
                           <tr>
                             <th colspan="3" style="border: none;"></th>
-                            <td class="footer-text">Balence :</td>
-                            <td style="text-align: right;">{{ balence|floatformat:2 }}</td>
+                            <td class="footer-text">Total Balance :</td>
+                            <td style="text-align: right;">{{ total_balance|floatformat:2 }}</td>
                           </tr>
                     </tfoot>
                   </table>

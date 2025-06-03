@@ -53,7 +53,7 @@
                         <td class="text-nowrap">{{ invoice.date }}</td>
                         <td class="text-nowrap">{{ invoice.grand_total }}</td>
                         <td class="text-nowrap"><a href="{% url 'view_invoice' invoice.id %}" class="btn btn-product">View Invoice</a></td>
-                        <td class="text-nowrap"><a href="" class="btn btn-product">Edit</a></td>
+                        <td class="text-nowrap">{% if invoice.customer.wallet < 0 %}<a href="{% url 'edit_invoice' invoice.id %}" class="btn btn-product">Edit</a>{%else%} <span class="text-success fw-bold">Fully Paid</span>{% endif %}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
