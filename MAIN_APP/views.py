@@ -80,7 +80,7 @@ def dashboard(request):
     staffs=User.objects.filter(is_staff=True,is_superuser=False).count()
  
     today = timezone.now().date()
-    recent_invoice=Invoice.objects.filter(date__date=today)
+    recent_invoice=Invoice.objects.filter(date__date=today).order_by('-id')
     total_invoice_amount=Invoice.objects.all().aggregate(total_sum=(Sum('grand_total')))['total_sum'] or 0.00
     total_amount_paid=Invoice.objects.all().aggregate(total_sum=(Sum('amount_paid')))['total_sum'] or 0.00
     total_amount_due = Customer.objects.filter(wallet__lt=0).aggregate(total_sum=Sum('wallet'))['total_sum'] or 0.0  

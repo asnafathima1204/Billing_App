@@ -40,6 +40,8 @@ def create_invoice(request):
     cart_item=None
     balance = 0
     due_amount= 0
+    new_wallet_balance = 0
+    amount_paid = 0
     
     if phone:
         customer = Customer.objects.get(phone=phone)
@@ -65,7 +67,6 @@ def create_invoice(request):
         action = request.POST.get("action")
 
         if action == "add_product":
-            # products=None
             product_id = request.POST.get("product_id")
             product=get_object_or_404(Product, id=product_id)
             if not cart:
@@ -197,7 +198,6 @@ def create_invoice(request):
                 if cart_items:
                     grand_total = cart.grand_total
                     customer = cart.customer
-                    wallet=customer.wallet
                     amount_due = amount_paid-grand_total
 
                     #if amount_due > 0 = amount_due, which will include in wallet as negative 
@@ -227,6 +227,16 @@ def create_invoice(request):
             # if not cart.amount_paid:
             #     messages.error(request,"Did you forget to pay?")
             #     return redirect('create_invoice')
+
+            cart.amount_due = cart.amount_paid - cart.grand_total
+            customer = cart.customer
+            print(customer)
+            print(cart.amount_due)
+            new_wallet_balance = customer.wallet - abs(cart.amount_due)
+            print(new_wallet_balance)
+            if new_wallet_balance < -customer.credit_limit:
+                messages.error(request, f"Customer has exceeded their credit limit of ₹{customer.credit_limit}.")
+                return redirect('create_invoice')
             
             invoice=Invoice.objects.create(
                 customer = cart.customer,
@@ -236,38 +246,48 @@ def create_invoice(request):
                 grand_total = cart.grand_total,
                 gst=cart.gst,
                 amount_paid=cart.amount_paid,
-                # amount_due=cart.amount_due
             )
 
             invoice.amount_due = invoice.amount_paid - invoice.grand_total
 
-            if invoice.amount_due > 0:
-                customer.wallet += invoice.amount_due
-                invoice.amount_due = 0
-                messages.success(request,f"₹{invoice.amount_due} added to wallet.")
+            if invoice.amount_due < 0:
+                if customer.wallet >= abs(invoice.amount_due):
+                    customer.wallet -= abs(invoice.amount_due)
+                    invoice.amount_due = 0
+                elif customer.wallet < abs(invoice.amount_due):
+                    invoice.amount_due += customer.wallet
+                    customer.wallet = invoice.amount_due
 
-            elif invoice.amount_due <= 0:
-                if customer.wallet > 0:
-                    if customer.wallet >= abs(invoice.amount_due): 
-                        # wallet can fully pay the due
-                        customer.wallet -= abs(invoice.amount_due)
-                        invoice.amount_due = 0
-                    else:  
-                        # wallet is not enough to fully pay the due
-                        invoice.amount_due += customer.wallet
-                        customer.wallet = 0
-                        customer.wallet += invoice.amount_due
-                        invoice.amount_due = 0
+            elif invoice.amount_due > 0:
+                old_dues = Invoice.objects.filter(customer=customer, amount_due__lt=0).exclude(id=invoice.id).order_by('date')
+                print("old dues",old_dues)
+                if old_dues:
+                    customer.wallet += invoice.amount_due
 
+                    for old in old_dues:
+                        if invoice.amount_due <= 0:
+                            break
+
+                        old_due_abs = abs(old.amount_due)
+
+                        if invoice.amount_due >= old_due_abs:
+                            invoice.amount_due =float(invoice.amount_due) - float(old_due_abs)
+                            old.amount_due = 0
+                        else:
+                            old.amount_due =float(old_due_abs) + float(invoice.amount_due)
+                            invoice.amount_due = 0
+
+                        old.save()
+                        invoice.save()
+                    
                 else:
                     customer.wallet += invoice.amount_due
-                    invoice.amount_due = 0
-        
-
 
             invoice.save()
             customer.save()
 
+
+              
             for item in CartItem.objects.filter(cart=cart):
                 invoice_item=InvoiceItem.objects.create(
                     invoice=invoice,
@@ -296,8 +316,7 @@ def create_invoice(request):
                 return redirect('create_invoice')
          
 
-    cart_items=CartItem.objects.filter(cart=cart)
-    print(cart_items)
+    cart_items=CartItem.objects.filter(cart=cart).order_by('-created_at')
     return render(request, "create_invoice.html", locals())
 
 
@@ -353,23 +372,15 @@ def search_cutomer(request):
 def view_invoice(request,id):
     invoice=Invoice.objects.get(id=id)
     invoiceItem=InvoiceItem.objects.filter(invoice=invoice)
-    # due_amount=0
-    # balance=0
+    due = 0
+    balance = 0
 
-    # due = invoice.amount_due 
+    print(invoice.amount_due)
 
-    # if due < 0:
-    #     due_amount = abs(due)
-    # elif due > 0:
-    #     balance = abs(due)
-    wallet = invoice.customer.wallet
-    total_balance = 0
-    total_due = 0
-
-    if wallet < 0:
-        total_due = abs(wallet)
-    elif wallet > 0:
-        total_balance = wallet
+    if invoice.amount_due < 0:
+        due = invoice.amount_due
+    elif invoice.amount_due > 0:
+        balance = invoice.amount_due
 
     return render(request,"view_invoice.html",locals())
 
@@ -408,46 +419,51 @@ def invoice_pdf(request,id):
     }
     return render_to_pdf("invoice_pdf.html",context)
 
-def edit_invoice(request,id):
-    invoice=Invoice.objects.get(id=id)
-    customer = Customer.objects.get(invoice=invoice)
-    wallet = customer.wallet
-    balance = 0
-    old_due = 0
+def edit_wallet(request,id):
+    customer = Customer.objects.get(id=id)
+    invoices = Invoice.objects.filter(customer=customer,amount_due__lt=0).order_by('date')
+    print(invoices)
+    old_wallet = abs(customer.wallet)
+    new_balance = 0
     new_due = 0
-
-    
-
-    if wallet < 0:
-        old_due = abs(wallet)
 
     if request.method == "POST":
         payment = request.POST.get("payment")
         print(payment)
-        wallet = customer.wallet
+        
+
+        customer.wallet += Decimal(payment)
 
 
-        wallet += Decimal(payment)
-        customer.wallet = wallet
-        print("wallet",customer.wallet)
-
-        if wallet > 0:
-            balance = wallet
-        elif wallet < 0:
-            new_due = wallet
-            new_due = abs(new_due)
+        if customer.wallet >= 0:
+            for invoice in invoices:
+                invoice.amount_due = 0
+                invoice.save()
+        else:
+            for invoice in invoices:
+                payment = Decimal(payment)
+                # payment -= invoice.amount_due
+                if payment >= abs(invoice.amount_due):
+                    invoice.amount_due = 0
+                    payment -= abs(invoice.amount_due)
+                else:
+                    invoice.amount_due += Decimal(payment)
+                    # payment = 0
+                invoice.save()
 
         customer.save()
-        invoice.save()
-        return render(request,'edit_invoice.html',locals())
+        print(customer.wallet)
+
+        if customer.wallet > 0:
+            new_balance = customer.wallet
+        elif customer.wallet< 0:
+            new_due = abs(customer.wallet)
+        else:
+            new_balance = 0.00
+            new_due = 0.00
 
 
-
-       
-    
-   
-
-
-    return render(request,"edit_invoice.html",locals())
+        return render(request,'edit_wallet.html',locals())
+    return render(request,"edit_wallet.html",locals())
 
 

@@ -19,6 +19,7 @@
                     <th scope="col">Phone</th>
                     <th scope="col">Address</th>
                     <th scope="col">Wallet</th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody class="table-group-divider">
@@ -29,6 +30,7 @@
                         <td class="text-nowrap">+91 {{ customer.phone }}</td>
                         <td class="text-nowrap">{{ customer.address }}</td>
                         <td class="text-nowrap">{{ customer.wallet }}</td>
+                        <td class="text-nowrap">{% if customer.wallet < 0%}<a href="{% url 'edit_wallet' customer.id %}" class="btn btn-product">Edit</a> {% endif %}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

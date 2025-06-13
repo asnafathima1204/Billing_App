@@ -38,6 +38,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Invoice No</th>
                     <th scope="col">Customer</th>
+                    <th scope="col">Staff</th>
                     <th scope="col">Date</th>
                     <th scope="col">Total</th>
                     <th scope="col"></th>
@@ -50,10 +51,13 @@
                         <td class="text-nowrap">{{ forloop.counter }}</td>
                         <td class="text-nowrap">#INV{{ invoice.id }}</td>
                         <td class="text-nowrap">{{ invoice.customer.fullname }}</td>
+                        <td class="text-nowrap">{% if not invoice.staff.first_name %}Admin{% else %}{{ invoice.staff.first_name }} {{ invoice.staff.last_name }}{% endif %}</td>
+
                         <td class="text-nowrap">{{ invoice.date }}</td>
                         <td class="text-nowrap">{{ invoice.grand_total }}</td>
                         <td class="text-nowrap"><a href="{% url 'view_invoice' invoice.id %}" class="btn btn-product">View Invoice</a></td>
-                        <td class="text-nowrap">{% if invoice.customer.wallet < 0 %}<a href="{% url 'edit_invoice' invoice.id %}" class="btn btn-product">Edit</a>{%else%} <span class="text-success fw-bold">Fully Paid</span>{% endif %}</td>
+                        <td class="text-nowrap">{% if invoice.amount_due == 0 or invoice.amount_due > 0 %}<span class="text-success fw-bold">Fully Paid</span>
+                            {% else %}<span class="text-danger fw-bold">Pending</span>{% endif %}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
