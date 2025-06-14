@@ -40,7 +40,10 @@
                     </div>
                     <hr>
                     <div class="sub-icon">
-                        <ul class="list-group">
+                        <ul class="list-group container" style="
+                            padding-left: 0px;
+                            padding-right: 0px;
+                        ">
                             <a href="{% url 'dashboard' %}" class="list-group-item"><span><i class="fa-solid fa-house"></i></span> <p>Dashboard</p></a>
                             {% if user.is_superuser %}
                             <a href="{% url 'staff' %}" class="list-group-item"><span><i class="fa-solid fa-user-tie"></i></span> <p>Staff</p></a>

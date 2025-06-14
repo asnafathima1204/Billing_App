@@ -15,9 +15,9 @@
                 <div class="search-content">
                 <form action="{% url 'invoices' %}" method="get" style="width: 100%;">
                     {% csrf_token %}
-                    <input type="text" class="search-input" name="search" style="width: 50%;">
+                    <input type="text" class="search-input" name="search" style="width: 50%;" autocomplete="off">
                     <input type="date" name="date" style="width: 30%;">
-                    <button type="submit" class="btn btn-product search-btn" style="width: 18%;">Search</button>
+                    <button type="submit" class="btn btn-product search-btn btn-sm" style="width: 16%;padding: 0px;">Search</button>
                   </form>
                 </div>
           </div>

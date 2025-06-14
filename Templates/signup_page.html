@@ -41,12 +41,12 @@
                     <div class="mb-3">
                       <label for="password" class="form-label">Password</label>
                       <input type="password" class="form-control" id="password" name="password" minlength="4" required>
-                      <span class="eye_icon eye_icon1" onclick="togglePassword1()"><i class="fa-regular fa-eye" id="toggleIcon1" ></i></span>
+                      <span class="eye_icon eye_icon1" onclick="togglePassword1()"><i class="fa-regular fa-eye-slash" id="toggleIcon1" ></i></span>
                     </div>
                     <div class="mb-3">
                       <label for="cnf_password" class="form-label">Confirm Password</label>
                       <input type="password" class="form-control" id="cnf_password" name="cnf_password" required oninput="checkPasswordMatch()">
-                      <span class="eye_icon eye_icon2" onclick="togglePassword2()" ><i class="fa-regular fa-eye" id="toggleIcon2"></i></span>
+                      <span class="eye_icon eye_icon2" onclick="togglePassword2()" ><i class="fa-regular fa-eye-slash" id="toggleIcon2"></i></span>
                     </div>
                 <button type="submit" class="btn ">Sign up</button>
                 <p class="text">Already have account? <a href="{% url 'login_page' %}">Log in</a></p>

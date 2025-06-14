@@ -15,7 +15,6 @@ def index(request):
     return render(request,'index.html')
 
 
-
 def login_page(request):
     if request.method == "POST":
         email = request.POST.get("email")

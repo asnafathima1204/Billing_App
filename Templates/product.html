@@ -15,8 +15,8 @@
                 <div class="search-content">
                   <form action="{% url 'products_list' %}" method="get" style="width: 100%;">
                     {% csrf_token %}
-                    <input type="text" class="search-input" name="search" style="width: 80%;">
-                    <button type="submit" class="btn btn-product search-btn">Search</button>
+                    <input type="text" class="search-input" name="search" style="width: 75%;" autocomplete="off">
+                    <button type="submit" class="btn btn-product search-btn" style="width: 23%;">Search</button>
                   </form>
                 </div>
           </div>
