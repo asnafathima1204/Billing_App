@@ -53,7 +53,7 @@ class CartItem(models.Model):
     cart=models.ForeignKey(Cart,on_delete=models.CASCADE)
     product=models.ForeignKey(Product,on_delete=models.CASCADE)
     quantity=models.PositiveBigIntegerField(default=1)
-    sub_total=models.DecimalField(max_digits=10,decimal_places=2,default=0.00)
+    sub_total=models.DecimalField(max_digits=10,decimal_places=2,default=0.00)(())
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
