@@ -378,7 +378,7 @@ def view_invoice(request,id):
     print(invoice.amount_due)
 
     if invoice.amount_due < 0:
-        due = invoice.amount_due
+        due = abs(invoice.amount_due)
     elif invoice.amount_due > 0:
         balance = invoice.amount_due
 
