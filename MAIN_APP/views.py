@@ -9,6 +9,7 @@ from django.db.models import Sum,Q
 from BILLING.models import *
 from PRODUCT.models import *
 from CUSTOMER.models import *
+from MAIN_APP.models import *
 
 # Create your views here.
 def index(request):
@@ -66,6 +67,9 @@ def signup_page(request):
                     )
             user.set_password(password)
             user.save()
+
+            UserProfile.objects.create(user=user)
+
             messages.success(request,"Account created succesfully. Please login with your credentials")
             return redirect('login_page')
 
@@ -75,7 +79,8 @@ def signup_page(request):
 def dashboard(request):
     invoices=Invoice.objects.all().count()
     customers=Customer.objects.all().count()
-    products=Product.objects.all().count()
+    products_count=Product.objects.all().count()
+    products_lt10=Product.objects.filter(stock__lt=10)
     staffs=User.objects.filter(is_staff=True,is_superuser=False).count()
  
     today = timezone.now().date()

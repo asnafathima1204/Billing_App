@@ -30,12 +30,12 @@ function togglePassword2() {
 
     if (password.type === "password") {
         password.type = 'text'; // Show the password
-        toggleIcon.classList.remove("fa-regular","fa-eye");
-        toggleIcon.classList.add("fa-regular","fa-eye-slash"); // Change the icon to 'eye-slash'
+        toggleIcon.classList.remove("fa-regular","fa-eye-slash");
+        toggleIcon.classList.add("fa-regular","fa-eye"); // Change the icon to 'eye-slash'
     } else {
         password.type = 'password'; // Hide the password
-        toggleIcon.classList.remove("fa-regular","fa-eye-slash");
-        toggleIcon.classList.add("fa-regular","fa-eye"); // Change the icon to 'eye'
+        toggleIcon.classList.remove("fa-regular","fa-eye");
+        toggleIcon.classList.add("fa-regular","fa-eye-slash"); // Change the icon to 'eye'
     }
 }
 
@@ -45,11 +45,11 @@ function togglePassword3() {
 
     if (password.type === "password") {
         password.type = 'text'; // Show the password
-        toggleIcon.classList.remove("fa-regular","fa-eye");
-        toggleIcon.classList.add("fa-regular","fa-eye-slash"); // Change the icon to 'eye-slash'
+        toggleIcon.classList.remove("fa-regular","fa-eye-slash");
+        toggleIcon.classList.add("fa-regular","fa-eye"); // Change the icon to 'eye-slash'
     } else {
         password.type = 'password'; // Hide the password
-        toggleIcon.classList.remove("fa-regular","fa-eye-slash");
-        toggleIcon.classList.add("fa-regular","fa-eye"); // Change the icon to 'eye'
+        toggleIcon.classList.remove("fa-regular","fa-eye");
+        toggleIcon.classList.add("fa-regular","fa-eye-slash"); // Change the icon to 'eye'
     }
 }

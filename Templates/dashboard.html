@@ -1,7 +1,9 @@
 {% extends 'extends.html' %}
 {% load static %}
 {% block title %}Dashboard{% endblock %}
-{% block link %}{% endblock %}
+{% block link %}
+<link rel="stylesheet" href="{% static '/CSS/product.css' %}">
+{% endblock %}
 {% block content %}
 <div class="col-lg-10 col-md-9 col-sm-9 page-col">
     <div class="dashboard-content p-4">
@@ -42,7 +44,7 @@
                 <div class="dashboard-box">
                     <div class="box-content">
                         <h6>Total Product</h6>
-                        <h1>{{ products }}</h1>
+                        <h1>{{ products_count }}</h1>
                     </div>
                 </div>
             </div>
@@ -72,6 +74,49 @@
             </div>
         </div>
         <div class="row" style="height: auto;">
+            <div class="recent-invoice">
+                <h1>Out Of Stokes</h1>
+                <div class="invoice-content">
+                    {% if products_lt10 %}
+                    <div class="table-div">
+                        <div class="table-responsive" >
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Product ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Stock</th>
+                                    <th scope="col">Updated at</th>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                    {% for product in products_lt10 %}
+                                    <tr>
+                                        <td class="text-nowrap">{{ forloop.counter }}</td>
+                                        <td class="text-nowrap">{{ product.product_id }}</td>
+                                        <td class="text-nowrap">{{ product.name }}/{{ product.description }}</td>
+                                        <td class="text-nowrap">{{ product.stock }}</td>
+                                        <td class="text-nowrap">{{ product.updated_at }}</td>
+                                        <td class="text-nowrap"><a href="{% url 'update_product' product.id %}" class="btn btn-product">View</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                        </table>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="else">
+                            <div class="p-4 text-center text-box">
+                            <h4>No Out of stocks!</h4>
+                            </div>
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row" style="height: auto; padding: 10px 0;">
             <div class="recent-invoice">
                 <h1>Recent Invoices</h1>
                 <div class="invoice-content">

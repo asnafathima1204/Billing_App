@@ -42,6 +42,8 @@ def create_invoice(request):
     due_amount= 0
     new_wallet_balance = 0
     amount_paid = 0
+    products=Product.objects.filter(stock__gt=0)
+    # print(products)
     
     if phone:
         customer = Customer.objects.get(phone=phone)
@@ -54,72 +56,116 @@ def create_invoice(request):
             due_amount=abs(due)
         elif due >= 0:
             balance=abs(due)
+
+
+    search_query = request.GET.get("search_product")
+    if search_query:
+        product = Product.objects.filter(name__iexact=search_query, stock__gt=0).first()
+        if product:
+            if not cart:
+                messages.error(request, "Please select a customer first.")
+                return redirect("create_invoice")
+
+            # Check if product already in cart
+            cart_item = CartItem.objects.filter(cart=cart, product=product).first()
+            if cart_item:
+                if cart_item.quantity < product.stock:
+                    cart.total -= cart_item.sub_total
+                    cart_item.quantity += 1
+                    cart_item.sub_total = cart_item.product.price * cart_item.quantity
+                    cart_item.save()
+                    cart.total += cart_item.sub_total
+                else:
+                    messages.warning(request, f"Only {product.stock} items available.")
+            else:
+                cart_item = CartItem.objects.create(product=product, cart=cart)
+                cart_item.sub_total = cart_item.product.price * cart_item.quantity
+                cart_item.save()
+                cart.total += cart_item.sub_total
+
+            # Update GST and grand total
+            gst = cart.total * Decimal((cart.gst_percentage / 100))
+            cart.gst = gst
+            cart.grand_total = cart.total + cart.gst
+            cart.save()
+
+            return redirect("create_invoice")
+        else:
+            messages.error(request, "Product not found or out of stock.")
+            return redirect("create_invoice")
     
     
-    search=request.GET.get("search_product")
-    if search:
-        products=Product.objects.filter(Q(name__icontains=search) & Q(stock__gt=0))
-        if not products.exists():
-            messages.error(request, "Requested product not found!")
-            return redirect('create_invoice')
+    # search=request.GET.get("search_product")
+    # if search:
+    #     products=Product.objects.filter(Q(name__icontains=search) & Q(stock__gt=0))
+    #     if not products.exists():
+    #         messages.error(request, "Requested product not found!")
+    #         return redirect('create_invoice')
+    # search_query = request.GET.get('search_product', '')
+    # if search_query:
+    #     products = Product.objects.filter(Q(name__icontains=search_query) & Q(stock__gt=0))
+    #     if not products.exists():
+    #         messages.error(request, "Requested product not found!")
+    #         return redirect('create_invoice')
+    
             
     if request.method == "POST":
         action = request.POST.get("action")
 
-        if action == "add_product":
-            product_id = request.POST.get("product_id")
-            product=get_object_or_404(Product, id=product_id)
-            if not cart:
-                messages.error(request,"Have you forget to choose a customer")
-                return redirect('create_invoice')
+        # if action == "add_product":
+        #     product_id = request.POST.get("product_id")
+        #     product=get_object_or_404(Product, id=product_id)
+        #     if not cart:
+        #         messages.error(request,"Have you forget to choose a customer")
+        #         return redirect('create_invoice')
                 
             
-            cart_item=CartItem.objects.filter(cart=cart,product=product).first()
-            if cart_item:
-                product_stock = int(cart_item.product.stock)
-                if cart_item.quantity < product_stock:
-                    cart.total -= cart_item.sub_total
+        #     cart_item=CartItem.objects.filter(cart=cart,product=product).first()
+        #     if cart_item:
+        #         product_stock = int(cart_item.product.stock)
+        #         if cart_item.quantity < product_stock:
+        #             cart.total -= cart_item.sub_total
 
-                    cart_item.quantity += 1
-                    cart_item.sub_total = cart_item.product.price * cart_item.quantity
-                    cart_item.save()
+        #             cart_item.quantity += 1
+        #             cart_item.sub_total = cart_item.product.price * cart_item.quantity
+        #             cart_item.save()
 
-                    cart.total += cart_item.sub_total
-                    gst=cart.total * Decimal((cart.gst_percentage/100))
-                    cart.gst = gst
-                    cart.grand_total = cart.total + cart.gst
-                    cart.save()
-                    return redirect('create_invoice')
-                else:
-                    cart.total -= cart_item.sub_total
+        #             cart.total += cart_item.sub_total
+        #             gst=cart.total * Decimal((cart.gst_percentage/100))
+        #             cart.gst = gst
+        #             cart.grand_total = cart.total + cart.gst
+        #             cart.save()
+        #             return redirect('create_invoice')
+        #         else:
+        #             cart.total -= cart_item.sub_total
 
-                    cart_item.quantity = product_stock
-                    cart_item.sub_total = cart_item.product.price * product_stock
-                    cart_item.save()
+        #             cart_item.quantity = product_stock
+        #             cart_item.sub_total = cart_item.product.price * product_stock
+        #             cart_item.save()
 
-                    cart.total += cart_item.sub_total
-                    gst=cart.total * Decimal((cart.gst_percentage/100))
-                    cart.gst = gst
-                    cart.grand_total = cart.total + cart.gst
-                    cart.save()
+        #             cart.total += cart_item.sub_total
+        #             gst=cart.total * Decimal((cart.gst_percentage/100))
+        #             cart.gst = gst
+        #             cart.grand_total = cart.total + cart.gst
+        #             cart.save()
 
-                    messages.warning(request, f"Only {product.stock} items available in stock.")
-                    return render(request,'create_invoice',locals())
-            else:
-                cart_item=CartItem.objects.create(product=product,cart=cart)
-                cart_item.sub_total = cart_item.product.price * cart_item.quantity
-                cart_item.save()
+        #             messages.warning(request, f"Only {product.stock} items available in stock.")
+        #             return render(request,'create_invoice',locals())
+        #     else:
+        #         cart_item=CartItem.objects.create(product=product,cart=cart)
+        #         cart_item.sub_total = cart_item.product.price * cart_item.quantity
+        #         cart_item.save()
 
-                cart.total += cart_item.sub_total
-                gst=cart.total * Decimal((cart.gst_percentage/100))
-                cart.gst = gst
-                print(cart.gst)
-                cart.grand_total = cart.total + cart.gst
-                cart.save()
-            return redirect('create_invoice')
+        #         cart.total += cart_item.sub_total
+        #         gst=cart.total * Decimal((cart.gst_percentage/100))
+        #         cart.gst = gst
+        #         print(cart.gst)
+        #         cart.grand_total = cart.total + cart.gst
+        #         cart.save()
+        #     return redirect('create_invoice')
         
             
-        elif action == "update_quantity":
+        if action == "update_quantity":
             item_id=int(request.POST.get("item_id"))
             quantity=int(request.POST.get("quantity"))
             print("quantity:",quantity)

@@ -1,0 +1,70 @@
+{% extends 'extends.html' %}
+{% load static %}
+{% block title %}Add Staff{% endblock %}
+{% block link %}
+<link rel="stylesheet" href="{% static '/CSS/product.css' %}">
+{% endblock %}
+{% block content %}
+<div class="col-lg-10 col-md-9 col-sm-9 page-col">
+    <div class="add-product-content">
+        <h2>Add Staff</h2>
+        <h4 class="back"><<a href="{% url 'staff' %}">Back</a></h4>
+        <div class="content p-4">
+            <div class="box">
+                <form class="product-form" method="post" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                    <label for="f_name" class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" id="f_name" name="f_name" required>
+                            </div>
+                            <div class="mb-3">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                    <label for="password" class="form-label">Password *</label>
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <div class="mb-3">
+                                    <label for="profile_pic"  class="form-label">Profile Pic</label><br>
+                                    <input type="file" class="form-control-file" id="profile_pic" name="profile_pic">
+                            </div>
+                            
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                    <label for="l_name" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="l_name" name="l_name" >
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone">Phone Number </label><br>
+                                <div style="display: flex;">
+                                    <span style="padding: 8px; background: #eee; border: 1px solid #ccc; border-right: none;">+91</span>
+                                    <input type="tel" id="phone" name="phone"  
+                                        style="flex: 1; border: 1px solid #ccc; border-left: none;" minlength="10" maxlength="10" pattern="\d{10}">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                    <label for="address" class="form-label">Address</label>
+                                    <textarea name="address" id="address"></textarea>
+                            </div>
+                        </div>
+                                
+                                
+                                
+
+                                
+
+                                
+                    </div>
+                    <div class="add-product-btn">
+                        <button type="submit" class="btn btn-product-submit">Submit</button>
+                    </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

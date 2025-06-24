@@ -1,0 +1,42 @@
+{% extends 'extends.html' %}
+{% load static %}
+{% block title %}View Staff{% endblock %}
+{% block link %}
+<link rel="stylesheet" href="{% static '/CSS/product.css' %}">
+{% endblock %}
+{% block content %}
+<div class="col-lg-10 col-md-9 col-sm-9 page-col">
+   <div class="view-page">
+    <h2>Staff Details</h2>
+    <h4 class="back"><<a href="{% url 'staff' %}">Back</a></h4>
+    {% if user %}
+    <div class="product-div">
+        <div class="details-box row">
+                <div class="image-div col-lg-4 col-md-4">
+                    {% if user_profile.profile_pic %}
+                    <img src="{{ user_profile.profile_pic.url }}" alt="" style="max-height: 75%;">
+                    {% else %}
+                    <img src="{% static '/img/profile_alt.jpg' %}" alt="">
+                    {% endif %}
+                </div>
+                <div class="details-div col-lg-8 col-md-8">
+                    <div class="container">
+                        <div class="details-content p-4">
+                            <p><strong>ID : </strong>{{ user.id }}</p>
+                            <p><strong>FullName : </strong>{{ user.first_name }} {{ user.Last_name }}</p>
+                            <p><strong>Email : </strong>{{ user.email }}</p>
+                            <p><strong>Username: </strong>{{ user.username }}</p>
+                            <p><strong>Created at : </strong>{{ user.date_joined }}</p>
+                            <p><strong>Last Login : </strong>{{ user.last_login }}</p>
+                            {% if user_profile.address %}<p><strong>Address : </strong>{{ user_profile.address }}</p>{% endif %}
+                            {% if user_profile.phone %}<p><strong>Phone : </strong>{{ user_profile.phone }}</p>{% endif %}
+                            
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    {% endif %}
+   </div>
+</div>
+{% endblock %}

@@ -1,11 +1,17 @@
 {% extends 'extends.html' %}
 {% load static %}
 {% block title %}Staff{% endblock %}
-{% block link %}{% endblock %}
+{% block link %}
+<link rel="stylesheet" href="{% static '/CSS/product.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+{% endblock %}
 {% block content %}
 <div class="col-lg-10 col-md-9 col-sm-9 page-col">
   <h2 class="p-4">Staff Details</h2>
   {% if users %}
+  <div class="button p-4" style="float: right;"> 
+              <a href="{% url 'add_staff' %}" class="btn btn-add-product"><strong class="add-icon">+</strong> Add Staff</a>
+  </div>
   <div class="table-div">
     <div class=" table-responsive" >
       <table class="table table-hover table-bordered">
@@ -18,6 +24,7 @@
                 <th scope="col" class="text-nowrap">Joined</th>
                 <th scope="col" class="text-nowrap">Last login</th>
                 <th scope="col" class="text-nowrap">Staff</th>
+                <th scope="col" class="text-nowrap"></th>
                 <th scope="col" class="text-nowrap"></th>
               </tr>
             </thead>
@@ -37,7 +44,19 @@
                   {% else %}
                   <a href="{% url 'activate_staff' user.id %}" class="btn btn-success">Activate</a>
                   {% endif %}
-              </td>
+                </td>
+                <td>
+                  <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Action
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="{% url 'view_staff' user.id %}">View</a></li>
+                      <li><a class="dropdown-item" href="{% url 'update_staff' user.id %}">Edit</a></li>
+                      <li><a class="dropdown-item" href="{% url 'delete_staff' user.id %}"  onclick="return confirm('Are you sure you want to delete this staff?');" >Delete</a></li>
+                    </ul>
+                  </div>
+                </td>
               </tr>
              {% endfor %}
             </tbody>

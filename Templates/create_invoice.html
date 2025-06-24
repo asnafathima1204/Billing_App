@@ -28,60 +28,92 @@
                                     </div>
                                     {% endif %}
                                     <div class="new-customer-div p-4"  id="new-customer-div" style="display: none;">
-                                    <form action="{% url 'new_customer' %}" class="new_cumstomer" method="post">
-                                        {% csrf_token %}
-                                            <div class="mb-3 ">
-                                                <label for="fullname">Fullname *</label><br>
-                                                <input type="text" id="fullname" name="fullname" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="phone">Phone Number *</label><br>
-                                                <div style="display: flex;">
-                                                    <span style="padding: 8px; background: #eee; border: 1px solid #ccc; border-right: none;">+91</span>
-                                                    <input type="tel" id="phone" name="phone" required 
-                                                           style="flex: 1; border: 1px solid #ccc; border-left: none;" minlength="10" maxlength="10" pattern="\d{10}">
+                                        <form action="{% url 'new_customer' %}" class="new_cumstomer" method="post">
+                                            {% csrf_token %}
+                                                <div class="mb-3 ">
+                                                    <label for="fullname">Fullname *</label><br>
+                                                    <input type="text" id="fullname" name="fullname" required>
                                                 </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="address" >Address *</label><br>
-                                                <textarea  name="address" id="address"></textarea>
-                                            </div> 
-                                            <button type="submit" class="btn btn-primary w-100">Save Customer</button>
+                                                <div class="mb-3">
+                                                    <label for="phone">Phone Number *</label><br>
+                                                    <div style="display: flex;">
+                                                        <span style="padding: 8px; background: #eee; border: 1px solid #ccc; border-right: none;">+91</span>
+                                                        <input type="tel" id="phone" name="phone" required 
+                                                            style="flex: 1; border: 1px solid #ccc; border-left: none;" minlength="10" maxlength="10" pattern="\d{10}">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="address" >Address *</label><br>
+                                                    <textarea  name="address" id="address"></textarea>
+                                                </div> 
+                                                <button type="submit" class="btn btn-primary w-100">Save Customer</button>
                                         </form>
                                     </div>
                                     
-                                    <div class="existing-customer-div p-4" id="existing-customer-div" style="display: none;">
+                                    <!-- <div class="existing-customer-div p-4" id="existing-customer-div" style="display: none;">
                                             <form action="{% url 'search_cutomer' %}" method="get">
                                                 {% csrf_token %}
                                                 <input type="text" name="search" pattern="\d{10}">
                                                 <button type="submit">Search</button>
                                             </form>
-                                       </form>
+                                    </div> -->
+                                    <div class="existing-customer-div p-4" id="existing-customer-div" style="display: none;">
+                                       <form action="{% url 'search_cutomer' %}" method="get" id="customer-search-form">
+                                            {% csrf_token %}
+                                            <input type="text" name="search" id="search-input" list="phone-suggestions"
+                                                maxlength="10" pattern="\d{10}" required placeholder="Enter phone number" autocomplete="off">
+
+                                            <datalist id="phone-suggestions">
+                                                {% for customer in customers %}
+                                                    <option value="{{ customer.phone }}">{{ customer.phone }}</option>
+                                                {% endfor %}
+                                            </datalist>
+                                        </form>
                                     </div>
+
                                 </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="product_search p-4">
-                                {% if products %}
-                                <form method="post" class="d-flex">
+                                <!-- <form method="post" class="d-flex">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="add_product">
                                     <select name="product_id" id="product" class="w-100 product" onchange="updatePrice(this),setMaxStock(this)">
-                                    <option value="" selected disabled>Select Product</option> 
+                                    
                                     {% for product in products %}
                                     <option value="{{ product.id }}" data-price="{{ product.price }}" data-stock="{{ product.stock }}"  data-target="#product-details-{{ product.id }}" class="form-control">{{ product.name }}{% if product.description %}/{{ product.description }}{% endif %}</option>                                                                
                                     {% endfor %}
                                     </select>
                                     <button type="submit">Add </button>
+                                </form>  -->
+                                <form method="get" id="product-search-form" >
+                                    {% csrf_token %}
+                                    <input type="text" name="search_product" id="product-search-input"
+                                        list="product-suggestions" class="form-control" placeholder="Search product..."
+                                        autocomplete="off" required>
+
+                                    <datalist id="product-suggestions">
+                                       {% for product in products %}
+                                    <option value="{{ product.name }}" data-price="{{ product.price }}" data-stock="{{ product.stock }}"  data-target="#product-details-{{ product.id }}" class="form-control">{{ product.name }}{% if product.description %}/{{ product.description }}{% endif %}</option>                                                                
+                                    {% endfor %}
+                                    </datalist>
                                 </form>
-                                {% else %}
-                                 <form method="GET" >
+                                <!-- Product Search -->
+
+
+                                 <!-- <form method="GET" >
                                     <div class="d-flex">
                                         <input type="text" name="search_product" class="form-control" value="{{ product_search }}">
                                         <button class="btn btn-product" type="submit">Search</button>
                                     </div>
-                                 </form>
-                                 {% endif %}                                                                            
+                                 </form> -->
+                                 <!-- <form method="GET" id="searchForm">
+                                    <div class="d-flex">
+                                        <input type="text" name="search_product" class="form-control" id="searchInput" value="{{ product_search }}" autocomplete="off">
+                                        
+                                    </div>
+                                </form>
+                                                                                                         -->
                             </div>
                         </div>
                     </div>
@@ -208,6 +240,58 @@
             input.form.submit();
         });
     });
+
+
+    const searchInput = document.getElementById("searchInput");
+    let timer;
+
+    searchInput.addEventListener("keyup", function () {
+        clearTimeout(timer);
+
+        timer = setTimeout(() => {
+        if (this.value.trim().length > 0) {
+            document.getElementById("searchForm").submit();
+        }
+        }, 1000); // Delay to prevent submitting on every keystroke
+    });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("search-input");
+    const form = document.getElementById("customer-search-form");
+
+    // List of valid phone numbers from server (safe, small list only)
+    const validPhones = [
+        {% for customer in customers %}
+            "{{ customer.phone }}"{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    input.addEventListener("input", function () {
+        const value = this.value;
+        
+        if (validPhones.includes(value)) {
+            form.submit();
+        }
+    });
+});
+</script>
+<script>
+    const input = document.getElementById('product-search-input');
+    const datalist = document.getElementById('product-suggestions');
+    const form = document.getElementById('product-search-form');
+
+    input.addEventListener('input', function () {
+        for (let option of datalist.options) {
+            if (option.value === input.value) {
+                form.submit();  //  auto-submit when match found
+                break;
+            }
+        }
+    });
+</script>
+
+
+
 <script src="{% static '/JS/invoice.js' %}"></script>
 {% endblock %}
