@@ -4,11 +4,30 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from django.contrib import messages
 from MAIN_APP.models import *
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
  
 # Create your views here.
 @user_passes_test(lambda u:u.is_authenticated and u.is_superuser,login_url='login_page' )
 def staff(request):
     users = User.objects.exclude(is_superuser=True).order_by('-id')
+    if request.method == "GET":
+        search=request.GET.get("search")
+        date=request.GET.get("date")
+        users = User.objects.exclude(is_superuser=True).order_by('-id')
+        if search:
+            keyword = search.lower()
+            if keyword == "staff":
+                users = User.objects.filter(is_staff=True).exclude(is_superuser=True)
+            else:
+                users = User.objects.filter(
+                    Q(first_name__icontains=search) |
+                    Q(id__icontains=search) |
+                    Q(email__icontains=search)
+                ).exclude(is_superuser=True)
+        elif date:
+            users = User.objects.filter(Q(date_joined__date=date) | Q(last_login__date=date))
+        else:
+            users = User.objects.exclude(is_superuser=True).order_by('-id')
     
     return render(request,"staff.html",locals())
 

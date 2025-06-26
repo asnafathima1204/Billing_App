@@ -49,14 +49,6 @@
                                                 <button type="submit" class="btn btn-primary w-100">Save Customer</button>
                                         </form>
                                     </div>
-                                    
-                                    <!-- <div class="existing-customer-div p-4" id="existing-customer-div" style="display: none;">
-                                            <form action="{% url 'search_cutomer' %}" method="get">
-                                                {% csrf_token %}
-                                                <input type="text" name="search" pattern="\d{10}">
-                                                <button type="submit">Search</button>
-                                            </form>
-                                    </div> -->
                                     <div class="existing-customer-div p-4" id="existing-customer-div" style="display: none;">
                                        <form action="{% url 'search_cutomer' %}" method="get" id="customer-search-form">
                                             {% csrf_token %}
@@ -75,17 +67,6 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="product_search p-4">
-                                <!-- <form method="post" class="d-flex">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="add_product">
-                                    <select name="product_id" id="product" class="w-100 product" onchange="updatePrice(this),setMaxStock(this)">
-                                    
-                                    {% for product in products %}
-                                    <option value="{{ product.id }}" data-price="{{ product.price }}" data-stock="{{ product.stock }}"  data-target="#product-details-{{ product.id }}" class="form-control">{{ product.name }}{% if product.description %}/{{ product.description }}{% endif %}</option>                                                                
-                                    {% endfor %}
-                                    </select>
-                                    <button type="submit">Add </button>
-                                </form>  -->
                                 <form method="get" id="product-search-form" >
                                     {% csrf_token %}
                                     <input type="text" name="search_product" id="product-search-input"
@@ -98,22 +79,6 @@
                                     {% endfor %}
                                     </datalist>
                                 </form>
-                                <!-- Product Search -->
-
-
-                                 <!-- <form method="GET" >
-                                    <div class="d-flex">
-                                        <input type="text" name="search_product" class="form-control" value="{{ product_search }}">
-                                        <button class="btn btn-product" type="submit">Search</button>
-                                    </div>
-                                 </form> -->
-                                 <!-- <form method="GET" id="searchForm">
-                                    <div class="d-flex">
-                                        <input type="text" name="search_product" class="form-control" id="searchInput" value="{{ product_search }}" autocomplete="off">
-                                        
-                                    </div>
-                                </form>
-                                                                                                         -->
                             </div>
                         </div>
                     </div>
@@ -235,48 +200,27 @@
 {% endblock %}
 {% block script %}
 <script>
-    document.querySelectorAll('.qty_form input[name="quantity"]').forEach(input=>{
-        input.addEventListener('change', () => {
-            input.form.submit();
+    document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("search-input");
+        const form = document.getElementById("customer-search-form");
+
+        // List of valid phone numbers from server (safe, small list only)
+        const validPhones = [
+            {% for customer in customers %}
+                "{{ customer.phone }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        input.addEventListener("input", function () {
+            const value = this.value;
+            
+            if (validPhones.includes(value)) {
+                form.submit();
+            }
         });
     });
 
 
-    const searchInput = document.getElementById("searchInput");
-    let timer;
-
-    searchInput.addEventListener("keyup", function () {
-        clearTimeout(timer);
-
-        timer = setTimeout(() => {
-        if (this.value.trim().length > 0) {
-            document.getElementById("searchForm").submit();
-        }
-        }, 1000); // Delay to prevent submitting on every keystroke
-    });
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const input = document.getElementById("search-input");
-    const form = document.getElementById("customer-search-form");
-
-    // List of valid phone numbers from server (safe, small list only)
-    const validPhones = [
-        {% for customer in customers %}
-            "{{ customer.phone }}"{% if not forloop.last %},{% endif %}
-        {% endfor %}
-    ];
-
-    input.addEventListener("input", function () {
-        const value = this.value;
-        
-        if (validPhones.includes(value)) {
-            form.submit();
-        }
-    });
-});
-</script>
-<script>
     const input = document.getElementById('product-search-input');
     const datalist = document.getElementById('product-suggestions');
     const form = document.getElementById('product-search-form');
@@ -290,8 +234,5 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 </script>
-
-
-
 <script src="{% static '/JS/invoice.js' %}"></script>
 {% endblock %}

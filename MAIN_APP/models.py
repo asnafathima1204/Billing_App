@@ -7,7 +7,6 @@ class UserProfile(models.Model):
     phone = models.CharField(max_length=10)
     address = models.TextField()
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
-    # Add more fields as needed
 
     def __str__(self):
         return self.user.username

@@ -21,7 +21,6 @@ def invoices(request):
         invoices=Invoice.objects.all().order_by('-id')
         if search:
             invoices=Invoice.objects.filter(Q(customer__fullname__icontains=search)|Q(id__icontains=search)|Q(grand_total__icontains=search))
-           
 
         elif date:
             invoices=Invoice.objects.filter(date__date=date)
@@ -94,77 +93,10 @@ def create_invoice(request):
             messages.error(request, "Product not found or out of stock.")
             return redirect("create_invoice")
     
-    
-    # search=request.GET.get("search_product")
-    # if search:
-    #     products=Product.objects.filter(Q(name__icontains=search) & Q(stock__gt=0))
-    #     if not products.exists():
-    #         messages.error(request, "Requested product not found!")
-    #         return redirect('create_invoice')
-    # search_query = request.GET.get('search_product', '')
-    # if search_query:
-    #     products = Product.objects.filter(Q(name__icontains=search_query) & Q(stock__gt=0))
-    #     if not products.exists():
-    #         messages.error(request, "Requested product not found!")
-    #         return redirect('create_invoice')
-    
             
     if request.method == "POST":
         action = request.POST.get("action")
 
-        # if action == "add_product":
-        #     product_id = request.POST.get("product_id")
-        #     product=get_object_or_404(Product, id=product_id)
-        #     if not cart:
-        #         messages.error(request,"Have you forget to choose a customer")
-        #         return redirect('create_invoice')
-                
-            
-        #     cart_item=CartItem.objects.filter(cart=cart,product=product).first()
-        #     if cart_item:
-        #         product_stock = int(cart_item.product.stock)
-        #         if cart_item.quantity < product_stock:
-        #             cart.total -= cart_item.sub_total
-
-        #             cart_item.quantity += 1
-        #             cart_item.sub_total = cart_item.product.price * cart_item.quantity
-        #             cart_item.save()
-
-        #             cart.total += cart_item.sub_total
-        #             gst=cart.total * Decimal((cart.gst_percentage/100))
-        #             cart.gst = gst
-        #             cart.grand_total = cart.total + cart.gst
-        #             cart.save()
-        #             return redirect('create_invoice')
-        #         else:
-        #             cart.total -= cart_item.sub_total
-
-        #             cart_item.quantity = product_stock
-        #             cart_item.sub_total = cart_item.product.price * product_stock
-        #             cart_item.save()
-
-        #             cart.total += cart_item.sub_total
-        #             gst=cart.total * Decimal((cart.gst_percentage/100))
-        #             cart.gst = gst
-        #             cart.grand_total = cart.total + cart.gst
-        #             cart.save()
-
-        #             messages.warning(request, f"Only {product.stock} items available in stock.")
-        #             return render(request,'create_invoice',locals())
-        #     else:
-        #         cart_item=CartItem.objects.create(product=product,cart=cart)
-        #         cart_item.sub_total = cart_item.product.price * cart_item.quantity
-        #         cart_item.save()
-
-        #         cart.total += cart_item.sub_total
-        #         gst=cart.total * Decimal((cart.gst_percentage/100))
-        #         cart.gst = gst
-        #         print(cart.gst)
-        #         cart.grand_total = cart.total + cart.gst
-        #         cart.save()
-        #     return redirect('create_invoice')
-        
-            
         if action == "update_quantity":
             item_id=int(request.POST.get("item_id"))
             quantity=int(request.POST.get("quantity"))
@@ -488,13 +420,11 @@ def edit_wallet(request,id):
         else:
             for invoice in invoices:
                 payment = Decimal(payment)
-                # payment -= invoice.amount_due
                 if payment >= abs(invoice.amount_due):
                     invoice.amount_due = 0
                     payment -= abs(invoice.amount_due)
                 else:
                     invoice.amount_due += Decimal(payment)
-                    # payment = 0
                 invoice.save()
 
         customer.save()

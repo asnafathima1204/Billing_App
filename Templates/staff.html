@@ -8,10 +8,32 @@
 {% block content %}
 <div class="col-lg-10 col-md-9 col-sm-9 page-col">
   <h2 class="p-4">Staff Details</h2>
-  {% if users %}
-  <div class="button p-4" style="float: right;"> 
+  <div class="add-product">
+    <div class="row" style="height: auto;">
+        <div class="col-lg-9">
+          <div class="search-div p-4">
+                <div class="search-content">
+                <form action="{% url 'staff' %}" method="get" style="width: 100%;display: flex;">
+                    {% csrf_token %}
+                    <input type="text" class="search-input" name="search" style="width: 50%;" autocomplete="off">
+                     <div style="width: 30%;">
+                        
+                        <input type="date" name="date" id="date" class="form-control">
+                        <label for="date" style="font-size: 12px;">Login/Join Date</label>
+                    </div>
+                    <button type="submit" class="btn btn-product search-btn btn-sm" style="width: 16%;padding: 0px;margin: 3px;">Search</button>
+                  </form>
+                </div>
+          </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="button p-4" style="float: right;"> 
               <a href="{% url 'add_staff' %}" class="btn btn-add-product"><strong class="add-icon">+</strong> Add Staff</a>
-  </div>
+            </div>
+        </div>
+    </div>
+   </div>
+  {% if users %}
   <div class="table-div">
     <div class=" table-responsive" >
       <table class="table table-hover table-bordered">

@@ -8,6 +8,15 @@
 <div class="col-lg-10 col-md-9 col-sm-9 page-col p-4">
     
    <h2>Customers List</h2>
+    <div class="search-div p-4">
+                <div class="search-content">
+                <form action="{% url 'customers' %}" method="get" style="width: 100%;">
+                    {% csrf_token %}
+                    <input type="text" class="search-input" name="search" style="width: 75%;" autocomplete="off" placeholder="Search here .....">
+                    <button type="submit" class="btn btn-product search-btn btn-sm" style="width: 20%;padding: 0px;">Search</button>
+                  </form>
+                </div>
+          </div>
    {% if customers %}
     <div class="table-div p-4">
         <div class="table-responsive" >

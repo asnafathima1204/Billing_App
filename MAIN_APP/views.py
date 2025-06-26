@@ -35,9 +35,6 @@ def login_page(request):
             else:
                 messages.error(request,"Wrong password")
                 return redirect('login_page')
-    # else:
-    #     messages.error(request,"Invalid credentials")
-    #     return redirect('login_page')
                
     return render(request,'login_page.html')
 
@@ -80,7 +77,7 @@ def dashboard(request):
     invoices=Invoice.objects.all().count()
     customers=Customer.objects.all().count()
     products_count=Product.objects.all().count()
-    products_lt10=Product.objects.filter(stock__lt=10)
+    products_lt10=Product.objects.filter(stock__lt=5)
     staffs=User.objects.filter(is_staff=True,is_superuser=False).count()
  
     today = timezone.now().date()
