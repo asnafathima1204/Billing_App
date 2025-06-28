@@ -11,7 +11,7 @@ def customers(request):
         search=request.GET.get("search")
         customer=Customer.objects.all().order_by('-id')
         if search:
-            customers=Customer.objects.filter(Q(fullname__icontains=search)|Q(id__icontains=search))
+            customers=Customer.objects.filter(Q(fullname__icontains=search)|Q(id__icontains=search)|Q(phone__icontains=search))
          
         else:
             customers=Customer.objects.all().order_by('-id')

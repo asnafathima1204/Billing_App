@@ -39,6 +39,18 @@
                     </div>
                   </div>
                 <p>Only staff and admin can log in here. No public sign-up allowed.</p>
+                <div class="d-flex justify-content-between">
+                  <div class="admin">
+                    <p><strong>Admin Login</strong></p>
+                    <p class="text-wrap text-break">email:admin@gmail.com</p>
+                    <p>password:admin</p>
+                  </div>
+                  <div class="staff">
+                    <p><strong>Staff Login</strong></p>
+                    <p class="text-wrap text-break">email:staff@gmail.com</p>
+                    <p>password:staff</p>
+                  </div>
+                </div>
                 <button type="submit" class="btn">Log in</button>
                 <p class="text">Don't you an account? <a href="{% url 'signup_page' %}">Sign up</a></p>
               </form>
