@@ -50,16 +50,19 @@
                                         </form>
                                     </div>
                                     <div class="existing-customer-div p-4" id="existing-customer-div" style="display: none;">
-                                       <form action="{% url 'search_cutomer' %}" method="get" id="customer-search-form">
-                                            {% csrf_token %}
-                                            <input type="text" name="search" id="search-input" list="phone-suggestions"
+                                            <!-- {% csrf_token %} -->
+                                            <div class="position-relative mx-auto">
+                                                <input type="text" id="customerSearch" class="form-control" placeholder="Search customer by phone">
+                                                <div id="dropdownList" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
+                                            </div>
+                                            <!-- <input type="text" name="search" id="search-input" list="phone-suggestions"
                                                 maxlength="10" pattern="\d{10}" required placeholder="Enter phone number" autocomplete="off">
 
                                             <datalist id="phone-suggestions">
                                                 {% for customer in customers %}
                                                     <option value="{{ customer.phone }}">{{ customer.phone }}</option>
                                                 {% endfor %}
-                                            </datalist>
+                                            </datalist> -->
                                         </form>
                                     </div>
 
@@ -67,7 +70,7 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="product_search p-4">
-                                <form method="get" id="product-search-form" >
+                                <!-- <form method="get" id="product-search-form" >
                                     {% csrf_token %}
                                     <input type="text" name="search_product" id="product-search-input"
                                         list="product-suggestions" class="form-control" placeholder="Search product..."
@@ -78,7 +81,11 @@
                                     <option value="{{ product.name }}" data-price="{{ product.price }}" data-stock="{{ product.stock }}"  data-target="#product-details-{{ product.id }}" class="form-control">{{ product.name }}{% if product.description %}/{{ product.description }}{% endif %}</option>                                                                
                                     {% endfor %}
                                     </datalist>
-                                </form>
+                                </form> -->
+                                <div class="position-relative mx-auto">
+                                                <input type="text" id="productSearch" class="form-control" placeholder="Search product by phone">
+                                                <div id="productDropdown" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -200,39 +207,79 @@
 {% endblock %}
 {% block script %}
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const input = document.getElementById("search-input");
-        const form = document.getElementById("customer-search-form");
+const searchinput = document.getElementById('customerSearch');
+const dropdown = document.getElementById('dropdownList');
 
-        // List of valid phone numbers from server (safe, small list only)
-        const validPhones = [
-            {% for customer in customers %}
-                "{{ customer.phone }}"{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ];
+searchinput.addEventListener('input', function () {
+    const query = this.value;
+    if (query.length < 1) {
+        dropdown.innerHTML = '';
+        return;
+    }
 
-        input.addEventListener("input", function () {
-            const value = this.value;
-            
-            if (validPhones.includes(value)) {
-                form.submit();
-            }
+    fetch(`/BILLING/search_customer?q=${query}`)
+        .then(res => res.json())
+        .then(data => {
+            dropdown.innerHTML = '';
+            data.forEach(customer => {
+                const div = document.createElement('a');
+                div.className = 'list-group-item list-group-item-action';
+                div.textContent = `${customer.fullname} - ${customer.phone}`;
+                div.href = '#';
+
+                // Handle session and redirect
+                div.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    fetch('/BILLING/create_invoice/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken'),
+                        },
+                        body: JSON.stringify({ phone: customer.phone })
+                    }).then(() => {
+                        window.location.href = '/BILLING/create_invoice/';
+                    });
+                });
+
+                dropdown.appendChild(div);
+            });
         });
-    });
+});
 
+function getCookie(name) {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [key, value] = cookie.trim().split('=');
+        if (key === name) return decodeURIComponent(value);
+    }
+}
 
-    const input = document.getElementById('product-search-input');
-    const datalist = document.getElementById('product-suggestions');
-    const form = document.getElementById('product-search-form');
+const searchInput = document.getElementById('productSearch');
+const productDropdown = document.getElementById('productDropdown');
 
-    input.addEventListener('input', function () {
-        for (let option of datalist.options) {
-            if (option.value === input.value) {
-                form.submit();  //  auto-submit when match found
-                break;
-            }
+searchInput.addEventListener('input',function(){
+    const query=this.value;
+    if(query.length<1){
+            productDropdown.innerHTML='';
+            return
         }
-    });
+        fetch(`/BILLING/search_product?q=${query}`)
+        .then(res=>res.json())
+        .then(data=>{
+            productDropdown.innerHTML='';
+            console.log(data)
+            data.forEach(product=>{
+                const div=document.createElement('a')
+                div.className='list-group-item list-group-item-action';
+                div.textContent=product.name;
+                div.href=`/BILLING/add_product_to_cart/${product.id}`;
+                productDropdown.appendChild(div);
+            })
+        })
+    })
+
+
 </script>
 <script src="{% static '/JS/invoice.js' %}"></script>
 {% endblock %}

@@ -8,6 +8,7 @@ from xhtml2pdf import pisa
 from django.db.models import Q
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -29,10 +30,76 @@ def invoices(request):
             invoices=Invoice.objects.all().order_by('-id')
     return render(request,"invoices.html",locals())
 
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+def search_product(request):
+    q = request.GET.get('q', '')
+    if q:
+        products = Product.objects.filter(name__icontains=q, stock__gt=0).values('id', 'name')[:10]
+        return JsonResponse(list(products), safe=False)
+    return JsonResponse([], safe=False)
+
+
+@login_required
+def add_product_to_cart(request, id):
+    phone = request.session.get('phone')
+    if not phone:
+        messages.error(request, "Customer phone number missing in session.")
+        return redirect('create_invoice')
+
+    customer = Customer.objects.filter(phone=phone).first()
+    if not customer:
+            messages.error(request, "Customer not found.")
+            return redirect('create_invoice')
+
+
+    cart, created = Cart.objects.get_or_create(customer=customer)
+
+
+    product = get_object_or_404(Product, id=id, stock__gt=0)
+
+    cart_item = CartItem.objects.filter(cart=cart, product=product).first()
+    if cart_item:
+        if cart_item.quantity < product.stock:
+            cart.total -= cart_item.sub_total
+            cart_item.quantity += 1
+            cart_item.sub_total = product.price * cart_item.quantity
+            cart_item.save()
+            cart.total += cart_item.sub_total
+        else:
+            messages.warning(request, f"Only {product.stock} items available.")
+            return redirect("create_invoice")
+    else:
+        cart_item = CartItem.objects.create(product=product, cart=cart)
+        cart_item.sub_total = product.price * cart_item.quantity
+        cart_item.save()
+        cart.total += cart_item.sub_total
+
+    # Update totals
+    gst = cart.total * Decimal(cart.gst_percentage / 100)
+    cart.gst = gst
+    cart.grand_total = cart.total + cart.gst
+    cart.save()
+
+    return redirect("create_invoice")
 
 
 @login_required
 def create_invoice(request):
+    if request.method == "POST" and request.content_type == "application/json":
+        try:
+            data = json.loads(request.body)
+            phone = data.get('phone')
+            if phone:
+                request.session['phone'] = phone
+                return JsonResponse({'status': 'ok', 'stored_phone': phone})
+            else:
+                return JsonResponse({'error': 'No phone provided'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+        
     phone = request.session.get("phone")
     customers = Customer.objects.all()
     cart=None
@@ -56,43 +123,6 @@ def create_invoice(request):
         elif due >= 0:
             balance=abs(due)
 
-
-    search_query = request.GET.get("search_product")
-    if search_query:
-        product = Product.objects.filter(name__iexact=search_query, stock__gt=0).first()
-        if product:
-            if not cart:
-                messages.error(request, "Please select a customer first.")
-                return redirect("create_invoice")
-
-            # Check if product already in cart
-            cart_item = CartItem.objects.filter(cart=cart, product=product).first()
-            if cart_item:
-                if cart_item.quantity < product.stock:
-                    cart.total -= cart_item.sub_total
-                    cart_item.quantity += 1
-                    cart_item.sub_total = cart_item.product.price * cart_item.quantity
-                    cart_item.save()
-                    cart.total += cart_item.sub_total
-                else:
-                    messages.warning(request, f"Only {product.stock} items available.")
-            else:
-                cart_item = CartItem.objects.create(product=product, cart=cart)
-                cart_item.sub_total = cart_item.product.price * cart_item.quantity
-                cart_item.save()
-                cart.total += cart_item.sub_total
-
-            # Update GST and grand total
-            gst = cart.total * Decimal((cart.gst_percentage / 100))
-            cart.gst = gst
-            cart.grand_total = cart.total + cart.gst
-            cart.save()
-
-            return redirect("create_invoice")
-        else:
-            messages.error(request, "Product not found or out of stock.")
-            return redirect("create_invoice")
-    
             
     if request.method == "POST":
         action = request.POST.get("action")
@@ -326,23 +356,12 @@ def new_customer(request):
     return redirect('create_invoice')
 
 @login_required
-def search_cutomer(request):
-    customer=None
-    if request.method == "GET":
-        search = request.GET.get("search")
-        if search:
-            try:
-                customer=Customer.objects.get(phone=search)
-                print(customer)
-                request.session['phone']=search
-                return redirect('create_invoice')
-            except:
-                messages.error(request,"Customer not found with this number")
-                return redirect('create_invoice')
-        else:
-            messages.error(request,"Customer not found with this number")
-            return redirect('create_invoice')
-    return redirect('create_invoice')
+def search_customer(request):
+    q=request.GET.get('q','')
+    customer=Customer.objects.filter(phone__icontains=q).values('id','fullname','phone')[:10]
+    return JsonResponse(list(customer),safe=False)
+
+   
 
 
 
